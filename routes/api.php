@@ -41,16 +41,12 @@ Route::controller(AuthController::class)->group(function () {
 });
 
 Route::middleware('auth:api')->group(function () {
-    Route::controller(QuestionController::class)->group(function () {
-        Route::post('/questions', 'store'); // أو أي ميثود أخرى تحتاجها
-    });
-
-    Route::apiResource('/questions', QuestionController::class);
-
-    Route::controller(AnswerController::class)->group(function () {
-        Route::get('/getQuizResults', 'getQuizResults');
-        Route::get('/getQuizAnswers', 'getQuizAnswers');
-    });
-
-    Route::apiResource('/answers', AnswerController::class);
+    Route::resource('post', 'PostController');
+    Route::resource('user', 'UserController');
+    Route::resource('comment', 'CommentController');
+    Route::resource('questions', 'QuestionsController');
+    Route::resource('test', 'TestController');
+    Route::resource('answer', 'AnswerController');
+    Route::resource('reaction', 'ReactionController');
+    Route::resource('blog', 'BlogController');
 });

@@ -9,9 +9,9 @@ class CreatePostsTable extends Migration {
 	public function up()
 	{
 		Schema::create('posts', function(Blueprint $table) {
-			$table->increments('id', true);
+			$table->id();
 			$table->text('body');
-			$table->bigInteger('user_id')->unsigned();
+			$table->unsignedBigInteger('user_id')->unsigned();
             $table->timestamps();
         });
 	}

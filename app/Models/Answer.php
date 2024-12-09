@@ -1,27 +1,20 @@
 <?php
+
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Answer extends Model
+class Answer extends Model 
 {
-    use HasFactory;
 
-    protected $fillable = [
-        'question_id',
-        'user_id',
-        'answer',
-    ];
+    protected $table = 'answers';
+    public $timestamps = true;
+    protected $fillable = array('answer', 'points');
+    protected $visible = array('question_id');
 
-    // Define relationships if needed
     public function question()
     {
-        return $this->belongsTo(Question::class);
+        return $this->belongsTo('Questions');
     }
 
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
 }
