@@ -9,7 +9,7 @@ class CreateCommentsTable extends Migration {
 	public function up()
 	{
 		Schema::create('comments', function(Blueprint $table) {
-			$table->increments('id');
+			$table->id();
 			$table->text('body');
 			$table->unsignedBigInteger('post_id');
 			$table->unsignedBigInteger('user_id');

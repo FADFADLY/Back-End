@@ -9,7 +9,7 @@ class CreateAnswersTable extends Migration {
 	public function up()
 	{
 		Schema::create('answers', function(Blueprint $table) {
-			$table->increments('id');
+			$table->id();
 			$table->string('answer');
 			$table->integer('points');
 			$table->unsignedBigInteger('question_id')->unsigned();
