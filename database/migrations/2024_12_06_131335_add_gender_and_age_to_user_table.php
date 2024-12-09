@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->enum('gender',['male', 'female']);
-            $table->date('birth_date');
+            $table->integer('age');
         });
     }
 

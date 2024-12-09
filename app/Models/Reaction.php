@@ -4,10 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Reaction extends Model 
+class Reaction extends Model
 {
 
-    protected $table = 'reactions';
-    public $timestamps = true;
+    protected $fillable = ['user_id'];
+
+    public function reactable()
+    {
+        return $this->morphTo();
+    }
 
 }

@@ -4,12 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Questions extends Model 
+class Question extends Model
 {
-
-    protected $table = 'questions';
-    public $timestamps = true;
-    protected $fillable = array('question', 'test_id');
+    protected $fillable = ['question', 'test_id'];
 
     public function test()
     {

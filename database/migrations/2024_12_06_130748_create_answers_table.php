@@ -10,11 +10,11 @@ class CreateAnswersTable extends Migration {
 	{
 		Schema::create('answers', function(Blueprint $table) {
 			$table->increments('id');
-			$table->timestamps();
 			$table->string('answer');
 			$table->integer('points');
-			$table->bigInteger('question_id');
-		});
+			$table->unsignedBigInteger('question_id')->unsigned();
+            $table->timestamps();
+        });
 	}
 
 	public function down()

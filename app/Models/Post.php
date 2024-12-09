@@ -4,12 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Post extends Model 
+class Post extends Model
 {
-
-    protected $table = 'posts';
-    public $timestamps = true;
-    protected $fillable = array('body');
+    protected $fillable = ['body'];
 
     public function user()
     {
@@ -21,4 +18,8 @@ class Post extends Model
         return $this->hasMany('Comment');
     }
 
+    public function reactions()
+    {
+        return $this->morphMany(Reaction::class, 'reactable');
+    }
 }
