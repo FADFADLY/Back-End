@@ -9,10 +9,9 @@ class CreateReactionsTable extends Migration {
 	public function up()
 	{
 		Schema::create('reactions', function(Blueprint $table) {
-			$table->increments('id');
-			$table->bigInteger('user_id')->unsigned();
-			$table->enum('reactionable_type', array('post', 'comment'));
-			$table->bigInteger('reactionable_id')->unsigned();
+			$table->id();
+			$table->unsignedBigInteger('user_id');
+            $table->morphs('reactable');
             $table->timestamps();
         });
 	}

@@ -9,12 +9,12 @@ class CreateAnswersTable extends Migration {
 	public function up()
 	{
 		Schema::create('answers', function(Blueprint $table) {
-			$table->increments('id');
-			$table->timestamps();
+			$table->id();
 			$table->string('answer');
 			$table->integer('points');
-			$table->bigInteger('question_id');
-		});
+			$table->unsignedBigInteger('question_id')->unsigned();
+            $table->timestamps();
+        });
 	}
 
 	public function down()

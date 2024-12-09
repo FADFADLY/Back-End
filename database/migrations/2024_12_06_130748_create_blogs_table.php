@@ -9,11 +9,11 @@ class CreateBlogsTable extends Migration {
 	public function up()
 	{
 		Schema::create('blogs', function(Blueprint $table) {
-			$table->increments('id');
+			$table->id();
 			$table->string('title');
 			$table->text('body');
 			$table->string('image');
-			$table->bigInteger('user_id')->unsigned();
+			$table->unsignedBigInteger('user_id');
             $table->timestamps();
         });
 	}
