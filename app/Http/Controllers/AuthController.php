@@ -47,17 +47,23 @@ class AuthController extends Controller
     {
         $request->validate([
             'name'     => 'required|string|max:255',
+            'username' => 'required|string|max:255|unique:users,username',
             'email'    => 'required|email|unique:users,email',
+            'gender'   => 'required|string',
+            'birth_date'=> 'required|date',
             'password' => 'required|string|min:6|confirmed',
         ]);
 
         $user = User::create([
             'name'     => $request->name,
+            'username' => $request->username,
             'email'    => $request->email,
+            'gender'   => $request->gender,
+            'birth_date'=> $request->birth_date,
             'password' => Hash::make($request->password),
         ]);
 
-        $token = $user->createToken('Access Token')->plainTextToken;
+        $token = $user->createToken('Access Token')->accessToken;
 
         return response()->json([
             'token' => $token,
