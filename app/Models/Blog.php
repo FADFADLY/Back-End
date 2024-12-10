@@ -11,4 +11,8 @@ class Blog extends Model
         'title', 'body', 'image', 'user_id'
     ];
 
+    public function user()
+    {
+        return $this->belongsTo('User');
+    }
 }
