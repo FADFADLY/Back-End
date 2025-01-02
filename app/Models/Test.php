@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Question;
 
 class Test extends Model
 {
@@ -11,7 +12,6 @@ class Test extends Model
 
     public function questions()
     {
-        return $this->hasMany('Questions');
+        return $this->hasMany(Question::class);
     }
-
 }

@@ -10,12 +10,11 @@ class Question extends Model
 
     public function test()
     {
-        return $this->belongsTo('Test');
+        return $this->belongsTo(Test::class);
     }
 
     public function answers()
     {
-        return $this->hasMany('Answer');
+        return $this->hasMany(Answer::class);
     }
-
 }

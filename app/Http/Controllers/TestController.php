@@ -1,86 +1,75 @@
-<?php 
+<?php
 
 namespace App\Http\Controllers;
 
+use App\Models\Test;
 use Illuminate\Http\Request;
 
-class TestController extends Controller 
+class TestController extends Controller
 {
+    public function show($testId)
+    {
+        $test = Test::with('questions.answers')->findOrFail($testId);
+        return response()->json($test);
+    }
+    public function storeResults(Request $request, $testId)
+    {
+        $validated = $request->validate([
+            'answers' => 'required|array',
+        ]);
 
-  /**
-   * Display a listing of the resource.
-   *
-   * @return Response
-   */
-  public function index()
-  {
-    
-  }
+        $test = Test::findOrFail($testId);
 
-  /**
-   * Show the form for creating a new resource.
-   *
-   * @return Response
-   */
-  public function create()
-  {
-    
-  }
+        $totalPoints = 0;
 
-  /**
-   * Store a newly created resource in storage.
-   *
-   * @return Response
-   */
-  public function store(Request $request)
-  {
-    
-  }
+        foreach ($validated['answers'] as $questionId => $answerId) {
+            $answer = $test->questions()->find($questionId)->answers()->find($answerId);
+            if ($answer) {
+                $totalPoints += $answer->points;
+            }
+        }
 
-  /**
-   * Display the specified resource.
-   *
-   * @param  int  $id
-   * @return Response
-   */
-  public function show($id)
-  {
-    
-  }
+        if ($test->name == 'Beck Depression Inventory') {
+            $depressionLevelMessage = $this->getBeckDepressionLevelMessage($totalPoints);
+        } elseif ($test->name == 'Taylor test for anxiety and depression') {
+            $anxietyDepressionMessage = $this->getTaylorAnxietyDepressionLevelMessage($totalPoints);
+        }
 
-  /**
-   * Show the form for editing the specified resource.
-   *
-   * @param  int  $id
-   * @return Response
-   */
-  public function edit($id)
-  {
-    
-  }
+        return response()->json([
+            'message'                  => 'Test completed successfully',
+            'total_points'             => $totalPoints,
+            'depression_level'         => $depressionLevelMessage ?? null,
+            'anxiety_depression_level' => $anxietyDepressionMessage ?? null,
+        ]);
+    }
 
-  /**
-   * Update the specified resource in storage.
-   *
-   * @param  int  $id
-   * @return Response
-   */
-  public function update($id)
-  {
-    
-  }
+    private function getBeckDepressionLevelMessage($totalPoints)
+    {
+        if ($totalPoints >= 1 && $totalPoints <= 10) {
+            return 'These ups and downs are considered normal';
+        } elseif ($totalPoints >= 11 && $totalPoints <= 16) {
+            return 'Mild mood disturbance';
+        } elseif ($totalPoints >= 17 && $totalPoints <= 20) {
+            return 'Borderline clinical depression';
+        } elseif ($totalPoints >= 21 && $totalPoints <= 30) {
+            return 'Moderate depression';
+        } elseif ($totalPoints >= 31 && $totalPoints <= 40) {
+            return 'Severe depression';
+        } else {
+            return 'Extreme depression';
+        }
+    }
 
-  /**
-   * Remove the specified resource from storage.
-   *
-   * @param  int  $id
-   * @return Response
-   */
-  public function destroy($id)
-  {
-    
-  }
-  
+    private function getTaylorAnxietyDepressionLevelMessage($totalPoints)
+    {
+        if ($totalPoints <= 10) {
+            return 'Low anxiety level';
+        } elseif ($totalPoints <= 20) {
+            return 'Moderate anxiety level';
+        } elseif ($totalPoints <= 30) {
+            return 'High anxiety level';
+        } else {
+            return 'Severe anxiety level';
+        }
+    }
 }
-
-?>

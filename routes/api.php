@@ -1,16 +1,18 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BlogController;
+use App\Http\Controllers\PostController;
+use App\Http\Controllers\TestController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\CommentController;
+use App\Http\Controllers\ReactionController;
+use Laravel\Passport\Http\Controllers\ScopeController;
+use Laravel\Passport\Http\Controllers\ClientController;
 use Laravel\Passport\Http\Controllers\AccessTokenController;
 use Laravel\Passport\Http\Controllers\AuthorizationController;
-use Laravel\Passport\Http\Controllers\ClientController;
 use Laravel\Passport\Http\Controllers\PersonalAccessTokenController;
-use Laravel\Passport\Http\Controllers\ScopeController;
-use Laravel\Passport\Http\Controllers\TransientTokenController;
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\AnswerController;
-use App\Http\Controllers\QuestionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -41,12 +43,13 @@ Route::controller(AuthController::class)->group(function () {
 });
 
 Route::middleware('auth:api')->group(function () {
-    Route::resource('post', 'PostController');
-    Route::resource('user', 'UserController');
-    Route::resource('comment', 'CommentController');
-    Route::resource('questions', 'QuestionsController');
-    Route::resource('test', 'TestController');
-    Route::resource('answer', 'AnswerController');
-    Route::resource('reaction', 'ReactionController');
-    Route::resource('blog', 'BlogController');
+    Route::apiResource('post', PostController::class);
+    Route::apiResource('user', UserController::class);
+    Route::apiResource('comment', CommentController::class);
+
+    Route::post('storeResults/{testId}', [TestController::class, 'storeResults']);
+    Route::apiResource('test', TestController::class);
+
+    Route::resource('reaction', ReactionController::class);
+    Route::resource('blog', BlogController::class);
 });

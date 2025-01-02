@@ -12,7 +12,7 @@ class CreateAnswersTable extends Migration {
 			$table->id();
 			$table->string('answer');
 			$table->integer('points');
-			$table->integer('question_id')->unsigned();
+			$table->unsignedBigInteger('question_id');
             $table->timestamps();
         });
 	}

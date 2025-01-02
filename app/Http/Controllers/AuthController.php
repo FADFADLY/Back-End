@@ -11,6 +11,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use Carbon\Carbon;
 
 class AuthController extends Controller
 {
@@ -33,8 +34,7 @@ class AuthController extends Controller
         $user = Auth::user();
 
         // Generate an access token for the user
-        $tokenResult = $user->createToken('Access Token');
-        $token = $tokenResult->accessToken;
+        $token = $user->createToken('Access Token')->accessToken;
 
         // Return the token and user details
         return response()->json([
@@ -54,12 +54,16 @@ class AuthController extends Controller
             'password'     => 'required|string|min:6|confirmed',
         ]);
 
+        $birthDate = Carbon::parse($request->birth_date);
+        $age = $birthDate->diffInYears(Carbon::now());
+
         $user = User::create([
             'name'         => $request->name,
             'username'     => $request->username,
             'email'        => $request->email,
             'gender'       => $request->gender,
             'birth_date'   => $request->birth_date,
+            'age'          => $age,
             'password'     => Hash::make($request->password),
         ]);
 
@@ -73,13 +77,10 @@ class AuthController extends Controller
 
     public function forgotPassword(Request $request)
     {
-        // Validate the email address in the request
         $request->validate(['email' => 'required|email']);
 
-        // Find the user by email
         $user = User::where('email', $request->email)->first();
 
-        // Return an error if the user is not found
         if (!$user) {
             return response()->json(['message' => 'User not found.'], 404);
         }
@@ -94,16 +95,14 @@ class AuthController extends Controller
         // Send the reset code to the user's email
         Mail::to($user->email)->send(new ResetPasswordMail($resetCode, $user->email));
 
-        // Return a success response
         return response()->json(['message' => 'Reset code sent.'], 200);
     }
 
     public function resetPassword(Request $request)
     {
-        // Validate the incoming request data
         $request->validate([
-            'password'   => 'required|string|min:6|confirmed', // Ensure password confirmation
-            'reset_code' => 'required' // Validate the reset code
+            'password'   => 'required|string|min:6|confirmed',
+            'reset_code' => 'required'
         ]);
 
         // Check if the user exists and the reset code matches
@@ -119,7 +118,6 @@ class AuthController extends Controller
         $user->reset_code = null; // Clear the reset code after use
         $user->save();
 
-        // Return a success response
         return response()->json(['message' => __('passwords.reset')], 200);
     }
 
