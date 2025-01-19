@@ -50,7 +50,7 @@ class AuthController extends Controller
             'username'     => 'required|string|max:255|unique:users,username',
             'email'        => 'required|email|unique:users,email',
             'gender'       => 'required|string',
-            'birth_date'   => 'required|date',
+            'age'          => 'required|int',
             'password'     => 'required|string|min:6|confirmed',
         ]);
 
@@ -62,8 +62,7 @@ class AuthController extends Controller
             'username'     => $request->username,
             'email'        => $request->email,
             'gender'       => $request->gender,
-            'birth_date'   => $request->birth_date,
-            'age'          => $age,
+            'age'          => $request->age,
             'password'     => Hash::make($request->password),
         ]);
 
