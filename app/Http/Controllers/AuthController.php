@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\ApiResponse;
+use App\Http\Requests\RegisterRequest;
 use App\Models\User;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Mail\ResetPasswordMail;
@@ -19,113 +22,97 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         // Validate the incoming request data
-        $request->validate([
-            'email'    => 'required|email',
-            'password' => 'required|string',
+        $validator = Validator::make($request->all(), [
+            'email' => ['required', 'string', 'email'],
+            'password' => ['required'],
+        ], [
+            'email.required' => 'البريد الإلكتروني مطلوب',
+            'password.required' => 'كلمة المرور مطلوبة',
         ]);
 
-        // Attempt to log the user in
-        if (!Auth::attempt($request->only('email', 'password'))) {
-            return response()->json(['message' => 'Invalid login credentials'], 401);
+        if ($validator->fails()) {
+            return ApiResponse::sendResponse(422, 'Login Validation Errors', $validator->errors());
         }
 
-        // Get the authenticated user
-        $user = Auth::user();
-
-        // Generate an access token for the user
-        $tokenResult = $user->createToken('Access Token');
-        $token = $tokenResult->accessToken;
-
-        // Return the token and user details
-        return response()->json([
-            'token' => $token,
-            'user'  => $user,
-        ], 200);
+        if (Auth::attempt($request->only('email', 'password'))) {
+            $user = Auth::user();
+            $tokenResult = $user->createToken('Access Token');
+            $token = $tokenResult->accessToken;
+            $data['name'] =  $user->name;
+            $data['email'] =  $user->email;
+            return ApiResponse::sendResponse(200, 'Login Successfully', ['token' => $token, 'user' => $data]);
+        } else {
+            return ApiResponse::sendResponse(401, 'These credentials doesn\'t exist', null);
+        }
     }
 
-    public function register(Request $request)
+    public function register(RegisterRequest $request)
     {
-        $request->validate([
-            'name'         => 'required|string|max:255',
-            'username'     => 'required|string|max:255|unique:users,username',
-            'email'        => 'required|email|unique:users,email',
-            'gender'       => 'required|string',
-            'birth_date'   => 'required|date',
-            'password'     => 'required|string|min:6|confirmed',
-        ]);
+       $validatedData =  $request->validated();
 
         $user = User::create([
-            'name'         => $request->name,
-            'username'     => $request->username,
-            'email'        => $request->email,
-            'gender'       => $request->gender,
-            'birth_date'   => $request->birth_date,
-            'password'     => Hash::make($request->password),
+            'name'         =>  $validatedData['name'],
+            'username'     =>  $validatedData['username'],
+            'email'        =>  $validatedData['email'],
+            'gender'       =>  $validatedData['gender'],
+            'age'          =>  $validatedData['age'],
+            'password'     => Hash::make( $validatedData['password'])
         ]);
 
         $token = $user->createToken('Access Token')->accessToken;
 
-        return response()->json([
-            'token' => $token,
-            'user'  => $user,
-        ], 201);
+        $data['name'] = $user->name;
+        $data['username'] = $user->username;
+        $data['email'] = $user->email;
+        $data['gender'] = $user->gender;
+        $data['age'] = $user->age;
+
+        return ApiResponse::sendResponse(201, 'User Account Created Successfully',
+            ['token' => $token, 'user' => $data]);
     }
 
     public function forgotPassword(Request $request)
     {
-        // Validate the email address in the request
         $request->validate(['email' => 'required|email']);
 
-        // Find the user by email
         $user = User::where('email', $request->email)->first();
 
-        // Return an error if the user is not found
         if (!$user) {
             return response()->json(['message' => 'User not found.'], 404);
         }
 
-        // Generate a reset code (6-character random string)
         $resetCode = Str::random(6);
 
-        // Store the reset code in the database (ensure you have a reset_code column in the users table)
         $user->reset_code = $resetCode;
         $user->save();
 
-        // Send the reset code to the user's email
         Mail::to($user->email)->send(new ResetPasswordMail($resetCode, $user->email));
 
-        // Return a success response
         return response()->json(['message' => 'Reset code sent.'], 200);
     }
 
     public function resetPassword(Request $request)
     {
-        // Validate the incoming request data
         $request->validate([
             'password'   => 'required|string|min:6|confirmed', // Ensure password confirmation
             'reset_code' => 'required' // Validate the reset code
         ]);
 
-        // Check if the user exists and the reset code matches
         $user = User::where('email', $request->email)->where('reset_code', $request->reset_code)->first();
 
-        // Return an error if the user or reset code is invalid
         if (!$user) {
             return response()->json(['message' => __('passwords.token')], 400);
         }
 
-        // Update the user's password
         $user->password = Hash::make($request->password);
         $user->reset_code = null; // Clear the reset code after use
         $user->save();
 
-        // Return a success response
         return response()->json(['message' => __('passwords.reset')], 200);
     }
 
     public function logout(Request $request)
     {
-        // Revoke the authenticated user's token
         $request->user()->token()->revoke();
 
         return response()->json(['message' => 'Successfully logged out'], 200);

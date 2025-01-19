@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\PostController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Laravel\Passport\Http\Controllers\AccessTokenController;
@@ -41,12 +42,12 @@ Route::controller(AuthController::class)->group(function () {
 });
 
 Route::middleware('auth:api')->group(function () {
-    Route::resource('post', 'PostController');
-    Route::resource('user', 'UserController');
-    Route::resource('comment', 'CommentController');
-    Route::resource('questions', 'QuestionsController');
-    Route::resource('test', 'TestController');
-    Route::resource('answer', 'AnswerController');
-    Route::resource('reaction', 'ReactionController');
-    Route::resource('blog', 'BlogController');
+    Route::Resource('posts', PostController::class);
+    Route::Resource('user', 'UserController');
+    Route::Resource('comments', 'CommentController');
+    Route::Resource('questions', 'QuestionsController');
+    Route::Resource('tests', 'TestController');
+    Route::Resource('answers', 'AnswerController');
+    Route::Resource('reactions', 'ReactionController');
+    Route::Resource('blogs', 'BlogController');
 });
