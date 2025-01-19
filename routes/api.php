@@ -8,6 +8,7 @@ use App\Http\Controllers\TestController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ReactionController;
+use App\Http\Controllers\MoodEntryController;
 use Laravel\Passport\Http\Controllers\ScopeController;
 use Laravel\Passport\Http\Controllers\ClientController;
 use Laravel\Passport\Http\Controllers\AccessTokenController;
@@ -46,6 +47,7 @@ Route::middleware('auth:api')->group(function () {
     Route::apiResource('post', PostController::class);
     Route::apiResource('user', UserController::class);
     Route::apiResource('comment', CommentController::class);
+    Route::apiResource('mood-entries', MoodEntryController::class);
 
     Route::post('storeResults/{testId}', [TestController::class, 'storeResults']);
     Route::apiResource('test', TestController::class);
