@@ -46,12 +46,12 @@ Route::controller(AuthController::class)->group(function () {
 Route::middleware('auth:api')->group(function () {
     Route::apiResource('post', PostController::class);
     Route::apiResource('user', UserController::class);
-    Route::apiResource('comment', CommentController::class);
+    Route::apiResource('post.comment', CommentController::class)->shallow();
     Route::apiResource('mood-entries', MoodEntryController::class);
 
     Route::post('storeResults/{testId}', [TestController::class, 'storeResults']);
     Route::apiResource('test', TestController::class);
 
-    Route::resource('reaction', ReactionController::class);
+    Route::ApiResource('reaction', ReactionController::class);
     Route::resource('blog', BlogController::class);
 });

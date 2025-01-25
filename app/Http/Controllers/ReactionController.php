@@ -1,86 +1,59 @@
-<?php 
+<?php
 
 namespace App\Http\Controllers;
 
+use App\Helpers\ApiResponse;
+use App\Models\Reaction;
 use Illuminate\Http\Request;
 
-class ReactionController extends Controller 
+class ReactionController extends Controller
 {
+    // Get all reactions (Optional: Filter by reactable type and ID)
+    public function index(Request $request)
+    {
 
-  /**
-   * Display a listing of the resource.
-   *
-   * @return Response
-   */
-  public function index()
-  {
-    
-  }
+    }
 
-  /**
-   * Show the form for creating a new resource.
-   *
-   * @return Response
-   */
-  public function create()
-  {
-    
-  }
+    // Store a new reaction
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'reactable_id' => 'required|integer',
+            'reactable_type' => 'required|string',
+        ]);
 
-  /**
-   * Store a newly created resource in storage.
-   *
-   * @return Response
-   */
-  public function store(Request $request)
-  {
-    
-  }
+        // Toggle reaction (add or remove)
+        $existingReaction = Reaction::where('user_id', $validated['user_id'])
+            ->where('reactable_id', $validated['reactable_id'])
+            ->where('reactable_type', $validated['reactable_type'])
+            ->first();
 
-  /**
-   * Display the specified resource.
-   *
-   * @param  int  $id
-   * @return Response
-   */
-  public function show($id)
-  {
-    
-  }
+        if ($existingReaction) {
+            $existingReaction->delete();
+            return ApiResponse::sendResponse(200, 'Reaction removed successfully', null);
+        }
 
-  /**
-   * Show the form for editing the specified resource.
-   *
-   * @param  int  $id
-   * @return Response
-   */
-  public function edit($id)
-  {
-    
-  }
+        $reaction = Reaction::create($validated);
 
-  /**
-   * Update the specified resource in storage.
-   *
-   * @param  int  $id
-   * @return Response
-   */
-  public function update($id)
-  {
-    
-  }
+        return ApiResponse::sendResponse(201, 'Reaction added successfully', $reaction);
+    }
 
-  /**
-   * Remove the specified resource from storage.
-   *
-   * @param  int  $id
-   * @return Response
-   */
-  public function destroy($id)
-  {
-    
-  }
-  
+    // Show a specific reaction
+    public function show($id)
+    {
+
+    }
+
+    // Update a reaction
+    public function update(Request $request, $id)
+    {
+
+    }
+
+    // Delete a reaction
+    public function destroy($id)
+    {
+
+    }
 }
-
-?>

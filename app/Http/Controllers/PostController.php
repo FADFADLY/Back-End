@@ -51,7 +51,19 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
-        //
+
+        // Load the reactions with user details
+        $post->load('reactions.user:id,name');
+
+        // Transform the reactions to return only user details
+        $reactions = $post->reactions->map(function ($reaction) {
+            return $reaction->user;
+        });
+
+        return ApiResponse::sendResponse(200, 'Post details fetched successfully', [
+            'post' => $post->body,
+            'reactions' => $reactions
+        ]);
     }
 
     /**
