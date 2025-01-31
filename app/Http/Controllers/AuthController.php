@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\ApiResponse;
 use App\Models\User;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
@@ -23,11 +24,16 @@ class AuthController extends Controller
         $request->validate([
             'email'    => 'required|email',
             'password' => 'required|string',
-        ]);
+        ],[
+            'email.required' => 'البريد الالكتروني مطلوب',
+            'email.email' => 'البريد الالكتروني يجب ان يكون صالح',
+            'password.required' => 'كلمة المرور مطلوبة',
+            ]
+        );
 
         // Attempt to log the user in
         if (!Auth::attempt($request->only('email', 'password'))) {
-            return response()->json(['message' => 'Invalid login credentials'], 401);
+            return ApiResponse::sendResponse(401, 'البريد الالكتروني او كلمة المرور غير صحيحة', []);
         }
 
         // Get the authenticated user
@@ -37,10 +43,10 @@ class AuthController extends Controller
         $token = $user->createToken('Access Token')->accessToken;
 
         // Return the token and user details
-        return response()->json([
+        return ApiResponse::sendResponse(200, 'تم تسجيل الدخول بنجاح',[
             'token' => $token,
-            'user'  => $user,
-        ], 200);
+            'username'  => $user->username,
+        ]);
     }
 
     public function register(Request $request)
@@ -52,10 +58,23 @@ class AuthController extends Controller
             'gender'       => 'required|string',
             'age'          => 'required|int',
             'password'     => 'required|string|min:6|confirmed',
+        ],[
+            'name.required' => 'الاسم مطلوب',
+            'name.string' => 'الاسم يجب ان يكون نص',
+            'name.max' => 'الاسم يجب ان لا يتجاوز 255 حرف',
+            'username.required' => 'اسم المستخدم مطلوب',
+            'username.unique' => 'اسم المستخدم مستخدم من قبل',
+            'email.required' => 'البريد الالكتروني مطلوب',
+            'email.email' => 'البريد الالكتروني يجب ان يكون صالح',
+            'email.unique' => 'البريد الالكتروني مستخدم من قبل',
+            'gender.required' => 'الجنس مطلوب',
+            'age.required' => 'العمر مطلوب',
+            'age.integer' => 'العمر يجب ان يكون رقم',
+            'password.required' => 'كلمة المرور مطلوبة',
+            'password.min' => 'كلمة المرور يجب ان لا تقل عن 6 احرف',
+            'password.confirmed' => 'كلمة المرور غير متطابقة',
         ]);
 
-        $birthDate = Carbon::parse($request->birth_date);
-        $age = $birthDate->diffInYears(Carbon::now());
 
         $user = User::create([
             'name'         => $request->name,
@@ -66,12 +85,16 @@ class AuthController extends Controller
             'password'     => Hash::make($request->password),
         ]);
 
+        if(!$user){
+            return ApiResponse::sendResponse(400, 'حدث خطأ ما', []);
+        }
+
         $token = $user->createToken('Access Token')->accessToken;
 
-        return response()->json([
+        return ApiResponse::sendResponse(200, 'تم انشاء الحساب بنجاح', [
             'token' => $token,
             'user'  => $user,
-        ], 201);
+        ]);
     }
 
     public function forgotPassword(Request $request)
