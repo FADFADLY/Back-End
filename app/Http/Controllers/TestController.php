@@ -9,67 +9,67 @@ class TestController extends Controller
 {
     public function show($testId)
     {
-        $test = Test::with('questions.answers')->findOrFail($testId);
+        $test = Test::select('id', 'name', 'description')->with(['questions.answers' => function ($query) {
+            $query->select('id', 'answer', 'points', 'question_id');
+        }])->findOrFail($testId);
+
         return response()->json($test);
     }
-    public function storeResults(Request $request, $testId)
+
+    public function calculateScore($testId, Request $request)
     {
-        $validated = $request->validate([
-            'answers' => 'required|array',
-        ]);
+        $test = Test::with('questions.answers')->findOrFail($testId);
 
-        $test = Test::findOrFail($testId);
+        $score = 0;
+        $result = '';
 
-        $totalPoints = 0;
-
-        foreach ($validated['answers'] as $questionId => $answerId) {
-            $answer = $test->questions()->find($questionId)->answers()->find($answerId);
-            if ($answer) {
-                $totalPoints += $answer->points;
+        foreach ($test->questions as $question) {
+            if ($request->has($question->id)) {
+                $selectedAnswerId = $request->input($question->id);
+                foreach ($question->answers as $answer) {
+                    if ($answer->id == $selectedAnswerId) {
+                        $score += $answer->points;
+                        break;
+                    }
+                }
             }
         }
 
-        if ($test->name == 'Beck Depression Inventory') {
-            $depressionLevelMessage = $this->getBeckDepressionLevelMessage($totalPoints);
-        } elseif ($test->name == 'Taylor test for anxiety and depression') {
-            $anxietyDepressionMessage = $this->getTaylorAnxietyDepressionLevelMessage($totalPoints);
+        if ($testId == 1) {
+            if ($score <= 9) {
+                $result = 'قلق منخفض';
+            } elseif ($score <= 16) {
+                $result = 'قلق بسيط';
+            } elseif ($score <= 25) {
+                $result = 'قلق متوسط';
+            } elseif ($score <= 32) {
+                $result = 'قلق شديد';
+            } else {
+                $result = 'قلق شديد جداً';
+            }
+        } elseif ($testId == 2) {
+            if ($score <= 9) {
+                $result = 'لا يوجد اكتئاب';
+            } elseif ($score <= 16) {
+                $result = 'اكتئاب بسيط';
+            } elseif ($score <= 25) {
+                $result = 'اكتئاب متوسط';
+            } elseif ($score <= 32) {
+                $result = 'اكتئاب شديد';
+            } else {
+                $result = 'اكتئاب شديد جداً';
+            }
+        } elseif ($testId == 3) {
+            if ($score <= 41) {
+                $result = 'طبيعي';
+            } else {
+                $result = 'مرتفع';
+            }
         }
 
         return response()->json([
-            'message'                  => 'Test completed successfully',
-            'total_points'             => $totalPoints,
-            'depression_level'         => $depressionLevelMessage ?? null,
-            'anxiety_depression_level' => $anxietyDepressionMessage ?? null,
+            'score' => $score,
+            'result' => $result,
         ]);
-    }
-
-    private function getBeckDepressionLevelMessage($totalPoints)
-    {
-        if ($totalPoints >= 1 && $totalPoints <= 10) {
-            return 'These ups and downs are considered normal';
-        } elseif ($totalPoints >= 11 && $totalPoints <= 16) {
-            return 'Mild mood disturbance';
-        } elseif ($totalPoints >= 17 && $totalPoints <= 20) {
-            return 'Borderline clinical depression';
-        } elseif ($totalPoints >= 21 && $totalPoints <= 30) {
-            return 'Moderate depression';
-        } elseif ($totalPoints >= 31 && $totalPoints <= 40) {
-            return 'Severe depression';
-        } else {
-            return 'Extreme depression';
-        }
-    }
-
-    private function getTaylorAnxietyDepressionLevelMessage($totalPoints)
-    {
-        if ($totalPoints <= 10) {
-            return 'Low anxiety level';
-        } elseif ($totalPoints <= 20) {
-            return 'Moderate anxiety level';
-        } elseif ($totalPoints <= 30) {
-            return 'High anxiety level';
-        } else {
-            return 'Severe anxiety level';
-        }
     }
 }

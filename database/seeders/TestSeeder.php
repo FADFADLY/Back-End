@@ -12,287 +12,815 @@ class TestSeeder extends Seeder
         $tests =
             [
                 [
-                    'name' => 'Taylor test for anxiety and depression',
-                    'description' => 'A test designed to evaluate anxiety and depression symptoms.',
+                    'name' => 'اختبار تايلور للقلق والاكتئاب',
+                    'description' => 'مقياس سبنس للقلق لدى الأطفال والمراهقين هو أداة لقياس مستوى القلق عند الأطفال والمراهقين. يتضمن المقياس مجموعة من الأسئلة يُجيب عليها الشخص بـ"نعم" أو "لا"، لتقييم تأثير القلق على حياتهم اليومية. يتم تطبيقه على الأشخاص من 8 سنوات فما فوق، ويساعد في تحديد كيفية تأثير القلق فيهم وتوجيه العلاج المناسب',
                     'questions' => [
                         [
-                            'question' => 'I do not tire quickly',
-                            'answers' => [['answer' => 'True', 'points' => 0], ['answer' => 'False', 'points' => 1]]
+                            'question' => 'نومي مضطرب ومتقطع',
+                            'answers' => [['answer' => 'نعم', 'points' => 1], ['answer' => 'لا', 'points' => 0]]
                         ],
                         [
-                            'question' => 'I believe I am no more nervous than others',
-                            'answers' => [['answer' => 'True', 'points' => 0], ['answer' => 'False', 'points' => 1]]
+                            'question' => 'مرّت بي أوقات لم أستطع خلالها النوم بسبب القلق',
+                            'answers' => [['answer' => 'نعم', 'points' => 1], ['answer' => 'لا', 'points' => 0]]
                         ],
                         [
-                            'question' => 'I have very few headaches',
-                            'answers' => [['answer' => 'True', 'points' => 0], ['answer' => 'False', 'points' => 1]]
+                            'question' => 'مخاوفي قليلة جداً بالمقارنة بأصدقائي',
+                            'answers' => [['answer' => 'نعم', 'points' => 0], ['answer' => 'لا', 'points' => 1]]
                         ],
                         [
-                            'question' => 'I work under a great deal of tension',
-                            'answers' => [['answer' => 'True', 'points' => 1], ['answer' => 'False', 'points' => 0]]
+                            'question' => 'أعتقد أنني أكثر عصبية من معظم الناس',
+                            'answers' => [['answer' => 'نعم', 'points' => 1], ['answer' => 'لا', 'points' => 0]]
                         ],
                         [
-                            'question' => 'I frequently notice my hand shakes when I try do something',
-                            'answers' => [['answer' => 'True', 'points' => 1], ['answer' => 'False', 'points' => 0]]
+                            'question' => 'تنتابني أحلام مزعجة (أو كوابيس) كل عدة ليالي',
+                            'answers' => [['answer' => 'نعم', 'points' => 1], ['answer' => 'لا', 'points' => 0]]
                         ],
                         [
-                            'question' => 'I blush no more often than others',
-                            'answers' => [['answer' => 'True', 'points' => 0], ['answer' => 'False', 'points' => 1]]
+                            'question' => 'لدي متاعب أحياناً في معدتي',
+                            'answers' => [['answer' => 'نعم', 'points' => 1], ['answer' => 'لا', 'points' => 0]]
                         ],
                         [
-                            'question' => 'I have diarrhea one a month or more',
-                            'answers' => [['answer' => 'True', 'points' => 1], ['answer' => 'False', 'points' => 0]]
+                            'question' => 'غالباً ما ألاحظ أن يداي ترتجفان عندما أحاول القيام بعمل ما',
+                            'answers' => [['answer' => 'نعم', 'points' => 1], ['answer' => 'لا', 'points' => 0]]
                         ],
                         [
-                            'question' => 'I worry quite a bit over possible misfortunes',
-                            'answers' => [['answer' => 'True', 'points' => 1], ['answer' => 'False', 'points' => 0]]
+                            'question' => 'أعاني أحياناً من نوبات إسهال',
+                            'answers' => [['answer' => 'نعم', 'points' => 1], ['answer' => 'لا', 'points' => 0]]
                         ],
                         [
-                            'question' => 'I practically never blush',
-                            'answers' => [['answer' => 'True', 'points' => 0], ['answer' => 'False', 'points' => 1]]
+                            'question' => 'تثير قلقي أمور العمل والعمال',
+                            'answers' => [['answer' => 'نعم', 'points' => 1], ['answer' => 'لا', 'points' => 0]]
                         ],
                         [
-                            'question' => 'I am often afraid that I am going to blush',
-                            'answers' => [['answer' => 'True', 'points' => 1], ['answer' => 'False', 'points' => 0]]
+                            'question' => 'تصيبني نوبات من الغثيان (غمامات النفس)',
+                            'answers' => [['answer' => 'نعم', 'points' => 1], ['answer' => 'لا', 'points' => 0]]
                         ],
                         [
-                            'question' => 'My hands and feet are usually warm enough',
-                            'answers' => [['answer' => 'True', 'points' => 0], ['answer' => 'False', 'points' => 1]]
+                            'question' => 'كثيراً ما أخشى أن يحمر وجهي خجلاً',
+                            'answers' => [['answer' => 'نعم', 'points' => 1], ['answer' => 'لا', 'points' => 0]]
                         ],
                         [
-                            'question' => 'I sweat very easily even on cool days',
-                            'answers' => [['answer' => 'True', 'points' => 1], ['answer' => 'False', 'points' => 0]]
+                            'question' => 'أشعر بجوع في كل الأوقات تقريباً',
+                            'answers' => [['answer' => 'نعم', 'points' => 1], ['answer' => 'لا', 'points' => 0]]
                         ],
                         [
-                            'question' => 'Sometimes when embarrassed, I break out in a sweat',
-                            'answers' => [['answer' => 'True', 'points' => 1], ['answer' => 'False', 'points' => 0]]
+                            'question' => 'أثق في نفسي كثيراً',
+                            'answers' => [['answer' => 'نعم', 'points' => 0], ['answer' => 'لا', 'points' => 1]]
                         ],
                         [
-                            'question' => 'I hardly ever notice my heart pounding, and I am seldom short of breath',
-                            'answers' => [['answer' => 'True', 'points' => 0], ['answer' => 'False', 'points' => 1]]
+                            'question' => 'أتعب بسرعة',
+                            'answers' => [['answer' => 'نعم', 'points' => 1], ['answer' => 'لا', 'points' => 0]]
                         ],
                         [
-                            'question' => 'I feel hungry almost all of the time',
-                            'answers' => [['answer' => 'True', 'points' => 1], ['answer' => 'False', 'points' => 0]]
+                            'question' => 'يجعلني الانتظار عصبيّاً',
+                            'answers' => [['answer' => 'نعم', 'points' => 1], ['answer' => 'لا', 'points' => 0]]
                         ],
                         [
-                            'question' => 'I am very seldom troubled by constipation',
-                            'answers' => [['answer' => 'True', 'points' => 0], ['answer' => 'False', 'points' => 1]]
+                            'question' => 'أشعر بالإثارة لدرجة أن النوم يتعذر علي',
+                            'answers' => [['answer' => 'نعم', 'points' => 1], ['answer' => 'لا', 'points' => 0]]
                         ],
                         [
-                            'question' => 'I have a great deal of stomach trouble',
-                            'answers' => [['answer' => 'True', 'points' => 1], ['answer' => 'False', 'points' => 0]]
+                            'question' => 'عادةً ما أكون هادئاً',
+                            'answers' => [['answer' => 'نعم', 'points' => 0], ['answer' => 'لا', 'points' => 1]]
                         ],
                         [
-                            'question' => 'I have had periods in which I lost sleep over worry',
-                            'answers' => [['answer' => 'True', 'points' => 1], ['answer' => 'False', 'points' => 0]]
+                            'question' => 'تمر بي فترات من عدم الاستقرار لدرجة أنني لا أستطيع الجلوس طويلاً في مقعدي',
+                            'answers' => [['answer' => 'نعم', 'points' => 1], ['answer' => 'لا', 'points' => 0]]
                         ],
                         [
-                            'question' => 'I am easily embarrassed',
-                            'answers' => [['answer' => 'True', 'points' => 1], ['answer' => 'False', 'points' => 0]]
+                            'question' => 'لا أشعر بالسعادة معظم الوقت',
+                            'answers' => [['answer' => 'نعم', 'points' => 1], ['answer' => 'لا', 'points' => 0]]
                         ],
                         [
-                            'question' => 'I am more sensitive than most other people',
-                            'answers' => [['answer' => 'True', 'points' => 1], ['answer' => 'False', 'points' => 0]]
+                            'question' => 'من السهل أن أركز ذهني في عمل ما',
+                            'answers' => [['answer' => 'نعم', 'points' => 0], ['answer' => 'لا', 'points' => 1]]
                         ],
                         [
-                            'question' => 'I frequently find myself worrying about something',
-                            'answers' => [['answer' => 'True', 'points' => 1], ['answer' => 'False', 'points' => 0]]
+                            'question' => 'أشعر بالقلق على شيء ما، أو شخص ما، طوال الوقت تقريباً',
+                            'answers' => [['answer' => 'نعم', 'points' => 1], ['answer' => 'لا', 'points' => 0]]
                         ],
                         [
-                            'question' => 'I wish I could be as happy as others seem to be',
-                            'answers' => [['answer' => 'True', 'points' => 1], ['answer' => 'False', 'points' => 0]]
+                            'question' => 'لا أتهيب الأزمات والشدائد',
+                            'answers' => [['answer' => 'نعم', 'points' => 0], ['answer' => 'لا', 'points' => 1]]
                         ],
                         [
-                            'question' => 'I am usually calm and not easily upset',
-                            'answers' => [['answer' => 'True', 'points' => 0], ['answer' => 'False', 'points' => 1]]
+                            'question' => 'أود أن أصبح سعيداً كما يبدو الآخرين',
+                            'answers' => [['answer' => 'نعم', 'points' => 1], ['answer' => 'لا', 'points' => 0]]
                         ],
                         [
-                            'question' => 'I feel anxiety about something or someone almost all of the time',
-                            'answers' => [['answer' => 'True', 'points' => 1], ['answer' => 'False', 'points' => 0]]
+                            'question' => 'كثيراً ما أجد نفسي قلقاً على شيء ما',
+                            'answers' => [['answer' => 'نعم', 'points' => 1], ['answer' => 'لا', 'points' => 0]]
                         ],
                         [
-                            'question' => 'I am happy most of the time',
-                            'answers' => [['answer' => 'True', 'points' => 0], ['answer' => 'False', 'points' => 1]]
+                            'question' => 'أشعر أحياناً وبشكل مؤكد أنه لا فائدة لي',
+                            'answers' => [['answer' => 'نعم', 'points' => 1], ['answer' => 'لا', 'points' => 0]]
                         ],
                         [
-                            'question' => 'It makes me nervous to have to wait',
-                            'answers' => [['answer' => 'True', 'points' => 1], ['answer' => 'False', 'points' => 0]]
+                            'question' => 'أشعر أحياناً أنني أتمزق',
+                            'answers' => [['answer' => 'نعم', 'points' => 1], ['answer' => 'لا', 'points' => 0]]
                         ],
                         [
-                            'question' => 'Sometimes I become so excited I find it hard to get to sleep',
-                            'answers' => [['answer' => 'True', 'points' => 1], ['answer' => 'False', 'points' => 0]]
+                            'question' => 'أعرق بسهولة حتى في الأيام الباردة',
+                            'answers' => [['answer' => 'نعم', 'points' => 1], ['answer' => 'لا', 'points' => 0]]
                         ],
                         [
-                            'question' => 'I have sometimes felt that difficulties piling up so high I couldn’t get over them',
-                            'answers' => [['answer' => 'True', 'points' => 1], ['answer' => 'False', 'points' => 0]]
+                            'question' => 'الحياة صعبة بالنسبة لي في أغلب الأوقات',
+                            'answers' => [['answer' => 'نعم', 'points' => 1], ['answer' => 'لا', 'points' => 0]]
                         ],
                         [
-                            'question' => 'I admit I have felt worried beyond reason over small things',
-                            'answers' => [['answer' => 'True', 'points' => 1], ['answer' => 'False', 'points' => 0]]
+                            'question' => 'لا يقلقني ما يحتمل أن أقابله من سوء حظ',
+                            'answers' => [['answer' => 'نعم', 'points' => 0], ['answer' => 'لا', 'points' => 1]]
                         ],
                         [
-                            'question' => 'I have very few fears compared to my friends',
-                            'answers' => [['answer' => 'True', 'points' => 0], ['answer' => 'False', 'points' => 1]]
+                            'question' => 'إنني حساس بدرجة غير عادية',
+                            'answers' => [['answer' => 'نعم', 'points' => 1], ['answer' => 'لا', 'points' => 0]]
                         ],
                         [
-                            'question' => 'I certainly feel useless at times',
-                            'answers' => [['answer' => 'True', 'points' => 1], ['answer' => 'False', 'points' => 0]]
+                            'question' => 'لاحظت أن قلبي يخفق بشدة وأحياناً تتهيج نفسي',
+                            'answers' => [['answer' => 'نعم', 'points' => 1], ['answer' => 'لا', 'points' => 0]]
                         ],
                         [
-                            'question' => 'I find it hard to keep my mind on a task or job',
-                            'answers' => [['answer' => 'True', 'points' => 1], ['answer' => 'False', 'points' => 0]]
+                            'question' => 'لا أبكي بسهولة',
+                            'answers' => [['answer' => 'نعم', 'points' => 0], ['answer' => 'لا', 'points' => 1]]
                         ],
                         [
-                            'question' => 'I am usually self-conscious',
-                            'answers' => [['answer' => 'True', 'points' => 1], ['answer' => 'False', 'points' => 0]]
+                            'question' => 'خشيت أشياء أو أشخاص أعرف أنهم لا يستطيعون إيذائي',
+                            'answers' => [['answer' => 'نعم', 'points' => 1], ['answer' => 'لا', 'points' => 0]]
                         ],
                         [
-                            'question' => 'I am inclined to take things hard',
-                            'answers' => [['answer' => 'True', 'points' => 1], ['answer' => 'False', 'points' => 0]]
+                            'question' => 'لدي قابلية للتأثر بالأحداث تأثراً شديداً',
+                            'answers' => [['answer' => 'نعم', 'points' => 1], ['answer' => 'لا', 'points' => 0]]
                         ],
                         [
-                            'question' => 'At times I think I am no good at all',
-                            'answers' => [['answer' => 'True', 'points' => 1], ['answer' => 'False', 'points' => 0]]
+                            'question' => 'كثيراً ما أصاب بصداع',
+                            'answers' => [['answer' => 'نعم', 'points' => 1], ['answer' => 'لا', 'points' => 0]]
                         ],
                         [
-                            'question' => 'I am certainly lacking in self-confidence',
-                            'answers' => [['answer' => 'True', 'points' => 1], ['answer' => 'False', 'points' => 0]]
+                            'question' => 'لابد أن أعترف بأنني شعرت بالقلق على أشياء لا قيمة لها',
+                            'answers' => [['answer' => 'نعم', 'points' => 1], ['answer' => 'لا', 'points' => 0]]
                         ],
                         [
-                            'question' => 'I sometimes feel that I am about to go to pieces',
-                            'answers' => [['answer' => 'True', 'points' => 1], ['answer' => 'False', 'points' => 0]]
+                            'question' => 'لا أستطيع أن أركز تفكيري في شيء واحد',
+                            'answers' => [['answer' => 'نعم', 'points' => 1], ['answer' => 'لا', 'points' => 0]]
                         ],
                         [
-                            'question' => 'I am entirely self-confident',
-                            'answers' => [['answer' => 'True', 'points' => 0], ['answer' => 'False', 'points' => 1]]
+                            'question' => 'لا أرتبك بسهولة',
+                            'answers' => [['answer' => 'نعم', 'points' => 0], ['answer' => 'لا', 'points' => 1]]
+                        ],
+                        [
+                            'question' => 'اعتقد أحياناً أنني لا أصلح بالمرة',
+                            'answers' => [['answer' => 'نعم', 'points' => 1], ['answer' => 'لا', 'points' => 0]]
+                        ],
+                        [
+                            'question' => 'أنا شخص متوتر جداً',
+                            'answers' => [['answer' => 'نعم', 'points' => 1], ['answer' => 'لا', 'points' => 0]]
+                        ],
+                        [
+                            'question' => 'أرتبك أحياناً بدرجة تجعل العرق يتساقط مني بصورة تضايقني جداً',
+                            'answers' => [['answer' => 'نعم', 'points' => 1], ['answer' => 'لا', 'points' => 0]]
+                        ],
+                        [
+                            'question' => 'يحمر وجهي خجلاً بدرجة أكبر عندما أتحدث للآخرين',
+                            'answers' => [['answer' => 'نعم', 'points' => 1], ['answer' => 'لا', 'points' => 0]]
+                        ],
+                        [
+                            'question' => 'أنا أكثر حساسية من غالبية الناس',
+                            'answers' => [['answer' => 'نعم', 'points' => 1], ['answer' => 'لا', 'points' => 0]]
+                        ],
+                        [
+                            'question' => 'مرت بي أوقات شعرت خلالها بتراكم الصعاب بحيث لا أستطيع التغلب عليها',
+                            'answers' => [['answer' => 'نعم', 'points' => 1], ['answer' => 'لا', 'points' => 0]]
+                        ],
+                        [
+                            'question' => 'أكون متوتراً للغاية أثناء القيام بعمل ما',
+                            'answers' => [['answer' => 'نعم', 'points' => 1], ['answer' => 'لا', 'points' => 0]]
+                        ],
+                        [
+                            'question' => 'يداي وقدماي باردتان في العادة',
+                            'answers' => [['answer' => 'نعم', 'points' => 1], ['answer' => 'لا', 'points' => 0]]
+                        ],
+                        [
+                            'question' => 'أحياناً أحلم بأشياء أفضل الاحتفاظ بها لنفسي',
+                            'answers' => [['answer' => 'نعم', 'points' => 1], ['answer' => 'لا', 'points' => 0]]
+                        ],
+                        [
+                            'question' => 'لا تنقصني الثقة بالنفس',
+                            'answers' => [['answer' => 'نعم', 'points' => 0], ['answer' => 'لا', 'points' => 1]]
+                        ],
+                        [
+                            'question' => 'أصاب أحياناً بالإمساك',
+                            'answers' => [['answer' => 'نعم', 'points' => 1], ['answer' => 'لا', 'points' => 0]]
+                        ],
+                        [
+                            'question' => 'لا يحمر وجهي أبداً من الخجل',
+                            'answers' => [['answer' => 'نعم', 'points' => 0], ['answer' => 'لا', 'points' => 1]]
                         ]
-
                     ]
                 ],
                 [
-                    'name' => 'Beck test for depression',
-                    'description' => 'A comprehensive test to measure levels of depression.',
+                    'name' => 'مقياس بيك للاكتئاب ',
+                    'description' => 'مقياس الاكتئاب هو أداة لتقييم أعراض الاكتئاب التي تؤثر على الشخص. يعتمد على مجموعة من الأسئلة التي يقيم فيها الفرد حالته النفسية على مقياس من 4 درجات، مما يساعد على تحديد مدى تأثير الاكتئاب على حياته اليومية. يستخدم هذا المقياس بشكل شائع في تشخيص الاكتئاب ويساعد في اختيار العلاج الأنسب بناءً على النتائج',
                     'questions' => [
                         [
-                            'question' => 'I do not feel sad.',
+                            'question' => 'لا أشعر بالحزن',
                             'answers' => [
-                                ['answer' => 'I do not feel sad.', 'points' => 0],
-                                ['answer' => 'I feel sad.', 'points' => 1],
-                                ['answer' => 'I am sad all the time and I can\'t snap out of it.', 'points' => 2],
-                                ['answer' => 'I am so sad and unhappy that I can\'t stand it.', 'points' => 3],
+                                ['answer' => 'لا أشعر بالحزن', 'points' => 0],
+                                ['answer' => 'أشعر بالحزن', 'points' => 1],
+                                ['answer' => 'أشعر بالحزن طوال الوقت ولا أستطيع التخلص منه', 'points' => 2],
+                                ['answer' => 'أشعر بالحزن لدرجة لا أستطيع تحملها', 'points' => 3],
                             ]
                         ],
                         [
-                            'question' => 'I am not particularly discouraged about the future.',
+                            'question' => 'لا أشعر بتشاؤم تجاه المستقبل',
                             'answers' => [
-                                ['answer' => 'I am not particularly discouraged about the future.', 'points' => 0],
-                                ['answer' => 'I feel discouraged about the future.', 'points' => 1],
-                                ['answer' => 'I feel I have nothing to look forward to.', 'points' => 2],
-                                ['answer' => 'I feel the future is hopeless and that things cannot improve.', 'points' => 3],
+                                ['answer' => 'لا أشعر بتشاؤم تجاه المستقبل', 'points' => 0],
+                                ['answer' => 'أشعر بتشاؤم تجاه المستقبل', 'points' => 1],
+                                ['answer' => 'أشعر أنه لا يوجد شيء يشدني للمستقبل', 'points' => 2],
+                                ['answer' => 'أشعر أن المستقبل ميئوس منه ولا أمل فيه', 'points' => 3],
                             ]
                         ],
                         [
-                            'question' => 'I do not feel like a failure.',
+                            'question' => 'لا أشعر بأني فاشل',
                             'answers' => [
-                                ['answer' => 'I do not feel like a failure.', 'points' => 0],
-                                ['answer' => 'I feel I have failed more than the average person.', 'points' => 1],
-                                ['answer' => 'As I look back on my life, all I can see is a lot of failures.', 'points' => 2],
-                                ['answer' => 'I feel I am a complete failure as a person.', 'points' => 3],
+                                ['answer' => 'لا أشعر بأني فاشل', 'points' => 0],
+                                ['answer' => 'أشعر أنني فشلت أكثر من الآخرين', 'points' => 1],
+                                ['answer' => 'عندما أنظر إلى الماضي، أرى الكثير من الإخفاقات', 'points' => 2],
+                                ['answer' => 'أشعر بأنني فاشل تمامًا', 'points' => 3],
                             ]
                         ],
                         [
-                            'question' => 'I get as much satisfaction out of things as I used to.',
+                            'question' => 'أستمتع بدرجة كافية بملذات الحياة كما اعتدت',
                             'answers' => [
-                                ['answer' => 'I get as much satisfaction out of things as I used to.', 'points' => 0],
-                                ['answer' => 'I don\'t enjoy things the way I used to.', 'points' => 1],
-                                ['answer' => 'I don\'t get real satisfaction out of anything anymore.', 'points' => 2],
-                                ['answer' => 'I am dissatisfied or bored with everything.', 'points' => 3],
+                                ['answer' => 'أستمتع بدرجة كافية بملذات الحياة كما اعتدت', 'points' => 0],
+                                ['answer' => 'لا أستمتع بملذات الحياة كما كنت أفعل', 'points' => 1],
+                                ['answer' => 'لم أعد أجد متعة في أي شيء في الحياة', 'points' => 2],
+                                ['answer' => 'لا أستمتع إطلاقًا بأي شيء في الحياة', 'points' => 3],
                             ]
                         ],
                         [
-                            'question' => 'I don\'t feel particularly guilty.',
+                            'question' => 'لا أشعر بالذنب',
                             'answers' => [
-                                ['answer' => 'I don\'t feel particularly guilty.', 'points' => 0],
-                                ['answer' => 'I feel guilty a good part of the time.', 'points' => 1],
-                                ['answer' => 'I feel quite guilty most of the time.', 'points' => 2],
-                                ['answer' => 'I feel guilty all of the time.', 'points' => 3],
+                                ['answer' => 'لا أشعر بالذنب', 'points' => 0],
+                                ['answer' => 'أشعر بالذنب في بعض الأحيان', 'points' => 1],
+                                ['answer' => 'أشعر بالذنب في أغلب الأوقات', 'points' => 2],
+                                ['answer' => 'أشعر بالذنب بشكل عام', 'points' => 3],
                             ]
                         ],
                         [
-                            'question' => 'I don\'t feel I am being punished.',
+                            'question' => 'لا أشعر بأني أتعرض للعقاب',
                             'answers' => [
-                                ['answer' => 'I don\'t feel I am being punished.', 'points' => 0],
-                                ['answer' => 'I feel I may be punished.', 'points' => 1],
-                                ['answer' => 'I expect to be punished.', 'points' => 2],
-                                ['answer' => 'I feel I am being punished.', 'points' => 3],
+                                ['answer' => 'لا أشعر بأني أتعرض للعقاب', 'points' => 0],
+                                ['answer' => 'أشعر بأني قد أتعرض للعقاب', 'points' => 1],
+                                ['answer' => 'أتوقع أن أتعرض للعقاب', 'points' => 2],
+                                ['answer' => 'أشعر بأني أتعرض للعقاب', 'points' => 3],
                             ]
                         ],
                         [
-                            'question' => 'I don\'t feel disappointed in myself.',
+                            'question' => 'لا أشعر بعدم الرضا عن نفسي',
                             'answers' => [
-                                ['answer' => 'I don\'t feel disappointed in myself.', 'points' => 0],
-                                ['answer' => 'I am disappointed in myself.', 'points' => 1],
-                                ['answer' => 'I am disgusted with myself.', 'points' => 2],
-                                ['answer' => 'I hate myself.', 'points' => 3],
+                                ['answer' => 'لا أشعر بعدم الرضا عن نفسي', 'points' => 0],
+                                ['answer' => 'أنا غير راضٍ عن نفسي', 'points' => 1],
+                                ['answer' => 'أشعر بالاشمئزاز من نفسي', 'points' => 2],
+                                ['answer' => 'أكره نفسي', 'points' => 3],
                             ]
                         ],
                         [
-                            'question' => 'I don\'t feel I am any worse than anybody else.',
+                            'question' => 'لا أشعر بأني أسوأ من الآخرين',
                             'answers' => [
-                                ['answer' => 'I don\'t feel I am any worse than anybody else.', 'points' => 0],
-                                ['answer' => 'I am critical of myself for my weaknesses or mistakes.', 'points' => 1],
-                                ['answer' => 'I blame myself all the time for my faults.', 'points' => 2],
-                                ['answer' => 'I blame myself for everything bad that happens.', 'points' => 3],
+                                ['answer' => 'لا أشعر بأني أسوأ من الآخرين', 'points' => 0],
+                                ['answer' => 'أشعر أن لدي نقاط ضعف أكثر من الآخرين', 'points' => 1],
+                                ['answer' => 'ألوم نفسي طوال الوقت على أخطائي', 'points' => 2],
+                                ['answer' => 'ألوم نفسي على كل شيء سيء يحدث', 'points' => 3],
                             ]
                         ],
                         [
-                            'question' => 'I don\'t have any thoughts of killing myself.',
+                            'question' => 'أشعر بضيق من الحياة',
                             'answers' => [
-                                ['answer' => 'I don\'t have any thoughts of killing myself.', 'points' => 0],
-                                ['answer' => 'I have thoughts of killing myself, but I would not carry them out.', 'points' => 1],
-                                ['answer' => 'I would like to kill myself.', 'points' => 2],
-                                ['answer' => 'I would kill myself if I had the chance.', 'points' => 3],
+                                ['answer' => 'لا أشعر بضيق من الحياة', 'points' => 0],
+                                ['answer' => 'ليس لدي رغبة في الحياة', 'points' => 1],
+                                ['answer' => 'أصبحت أكره الحياة', 'points' => 2],
+                                ['answer' => 'أتمنى الموت إذا وجدت فرصة لذلك', 'points' => 3],
                             ]
                         ],
                         [
-                            'question' => 'I don\'t cry any more than usual.',
+                            'question' => 'لا أبكي أكثر من المعتاد',
                             'answers' => [
-                                ['answer' => 'I don\'t cry any more than usual.', 'points' => 0],
-                                ['answer' => 'I cry more now than I used to.', 'points' => 1],
-                                ['answer' => 'I cry all the time now.', 'points' => 2],
-                                ['answer' => 'I used to be able to cry, but now I can\'t cry even though I want to.', 'points' => 3],
+                                ['answer' => 'لا أبكي أكثر من المعتاد', 'points' => 0],
+                                ['answer' => 'أبكي الآن أكثر من المعتاد', 'points' => 1],
+                                ['answer' => 'أبكي طوال الوقت', 'points' => 2],
+                                ['answer' => 'كنت أستطيع البكاء في السابق، لكنني الآن لا أستطيع البكاء حتى لو أردت ذلك', 'points' => 3],
                             ]
                         ],
                         [
-                            'question' => 'I am no more irritated by things than I ever was.',
+                            'question' => 'لا أشعر بالتوتر أكثر من المعتاد',
                             'answers' => [
-                                ['answer' => 'I am no more irritated by things than I ever was.', 'points' => 0],
-                                ['answer' => 'I am slightly more irritated now than usual.', 'points' => 1],
-                                ['answer' => 'I am quite annoyed or irritated a good deal of the time.', 'points' => 2],
-                                ['answer' => 'I feel irritated all the time.', 'points' => 3],
+                                ['answer' => 'لا أشعر بالتوتر أكثر من المعتاد', 'points' => 0],
+                                ['answer' => 'أشعر بالتوتر أو الانزعاج بسهولة أكثر من المعتاد', 'points' => 1],
+                                ['answer' => 'أشعر بالتوتر طوال الوقت', 'points' => 2],
+                                ['answer' => 'لا أشعر بالتوتر أبدًا من الأشياء التي كانت توترني في السابق', 'points' => 3],
                             ]
                         ],
                         [
-                            'question' => 'I have not lost interest in other people.',
+                            'question' => 'لم أفقد الاهتمام بالآخرين',
                             'answers' => [
-                                ['answer' => 'I have not lost interest in other people.', 'points' => 0],
-                                ['answer' => 'I am less interested in other people than I used to be.', 'points' => 1],
-                                ['answer' => 'I have lost most of my interest in other people.', 'points' => 2],
-                                ['answer' => 'I have lost all of my interest in other people.', 'points' => 3],
+                                ['answer' => 'لم أفقد الاهتمام بالآخرين', 'points' => 0],
+                                ['answer' => 'أصبحت أقل اهتمامًا بالآخرين', 'points' => 1],
+                                ['answer' => 'فقدت معظم اهتمامي بالآخرين', 'points' => 2],
+                                ['answer' => 'فقدت كل اهتمامي بالآخرين', 'points' => 3],
                             ]
                         ],
                         [
-                            'question' => 'I make decisions about as well as I ever could.',
+                            'question' => 'أتخذ القرارات بنفس الكفاءة كما كنت أفعل',
                             'answers' => [
-                                ['answer' => 'I make decisions about as well as I ever could.', 'points' => 0],
-                                ['answer' => 'I put off making decisions more than I used to.', 'points' => 1],
-                                ['answer' => 'I have greater difficulty in making decisions more than I used to.', 'points' => 2],
-                                ['answer' => 'I can\'t make decisions at all anymore.', 'points' => 3],
+                                ['answer' => 'أتخذ القرارات بنفس الكفاءة كما كنت أفعل', 'points' => 0],
+                                ['answer' => 'أؤجل اتخاذ القرارات أكثر من المعتاد', 'points' => 1],
+                                ['answer' => 'أجد صعوبة أكبر في اتخاذ القرارات', 'points' => 2],
+                                ['answer' => 'لم أعد أستطيع اتخاذ أي قرارات', 'points' => 3],
+                            ]
+                        ],
+                        [
+                            'question' => 'لا أشعر أني أبدو أسوأ من المعتاد',
+                            'answers' => [
+                                ['answer' => 'لا أشعر أني أبدو أسوأ من المعتاد', 'points' => 0],
+                                ['answer' => 'أشعر أني أبدو أقل حيوية وجاذبية', 'points' => 1],
+                                ['answer' => 'أشعر أن هناك تغييرات دائمة في مظهري تجعلني أبدو أقل جاذبية', 'points' => 2],
+                                ['answer' => 'أعتقد أنني أبدو قبيحًا', 'points' => 3],
+                            ]
+                        ],
+                        [
+                            'question' => 'أستطيع القيام بالأعمال كما كنت أفعل',
+                            'answers' => [
+                                ['answer' => 'أستطيع القيام بالأعمال كما كنت أفعل', 'points' => 0],
+                                ['answer' => 'أحتاج إلى جهد إضافي لبدء العمل', 'points' => 1],
+                                ['answer' => 'أحتاج إلى دفع نفسي بقوة للقيام بأي شيء', 'points' => 2],
+                                ['answer' => 'لا أستطيع القيام بأي عمل على الإطلاق', 'points' => 3],
+                            ]
+                        ],
+                        [
+                            'question' => 'أستطيع النوم بشكل طبيعي',
+                            'answers' => [
+                                ['answer' => 'أستطيع النوم بشكل طبيعي', 'points' => 0],
+                                ['answer' => 'لا أنام بشكل جيد كما كنت أفعل', 'points' => 1],
+                                ['answer' => 'أستيقظ مبكرًا بساعة أو ساعتين ولا أستطيع العودة للنوم', 'points' => 2],
+                                ['answer' => 'أستيقظ مبكرًا بعدة ساعات ولا أستطيع العودة للنوم', 'points' => 3],
+                            ]
+                        ],
+                        [
+                            'question' => 'لا أشعر بالتعب أكثر من المعتاد',
+                            'answers' => [
+                                ['answer' => 'لا أشعر بالتعب أكثر من المعتاد', 'points' => 0],
+                                ['answer' => 'أشعر بالتعب بسهولة أكثر من المعتاد', 'points' => 1],
+                                ['answer' => 'أشعر بالتعب عند القيام بأي نشاط', 'points' => 2],
+                                ['answer' => 'أشعر بالتعب الشديد لدرجة أنني لا أستطيع القيام بأي شيء', 'points' => 3],
+                            ]
+                        ],
+                        [
+                            'question' => 'شهيتي للطعام طبيعية',
+                            'answers' => [
+                                ['answer' => 'شهيتي للطعام طبيعية', 'points' => 0],
+                                ['answer' => 'شهيتي للطعام أقل من المعتاد', 'points' => 1],
+                                ['answer' => 'شهيتي للطعام أسوأ بكثير الآن', 'points' => 2],
+                                ['answer' => 'ليس لدي أي شهية للطعام على الإطلاق', 'points' => 3],
+                            ]
+                        ],
+                        [
+                            'question' => 'لم أخسر الكثير من الوزن مؤخرًا',
+                            'answers' => [
+                                ['answer' => 'لم أخسر الكثير من الوزن مؤخرًا', 'points' => 0],
+                                ['answer' => 'خسرت أكثر من 2 كيلو جرام من وزني', 'points' => 1],
+                                ['answer' => 'خسرت أكثر من 4 كيلو جرام من وزني', 'points' => 2],
+                                ['answer' => 'خسرت أكثر من 6 كيلو جرام من وزني', 'points' => 3],
+                            ]
+                        ],
+                        [
+                            'question' => 'أنا لست مهتمًا بشكل مفرط بصحتي',
+                            'answers' => [
+                                ['answer' => 'أنا لست مهتمًا بشكل مفرط بصحتي', 'points' => 0],
+                                ['answer' => 'أنا مهتم أكثر من المعتاد بمشاكل جسدي أو آلامي', 'points' => 1],
+                                ['answer' => 'أنا مهتم جدًا بمشاكلي الصحية لدرجة أنني لا أستطيع التفكير في أي شيء آخر', 'points' => 2],
+                                ['answer' => 'أنا مهتم بشكل مفرط بصحتي لدرجة أنني لا أستطيع التركيز على أي شيء آخر', 'points' => 3],
+                            ]
+                        ],
+                        [
+                            'question' => 'لم ألاحظ أي تغييرات حديثة في اهتمامي الجنسي',
+                            'answers' => [
+                                ['answer' => 'لم ألاحظ أي تغييرات حديثة في اهتمامي الجنسي', 'points' => 0],
+                                ['answer' => 'أنا أقل اهتمامًا بالجنس من المعتاد', 'points' => 1],
+                                ['answer' => 'اهتمامي بالجنس أقل بكثير الآن', 'points' => 2],
+                                ['answer' => 'فقدت كل اهتمامي بالجنس', 'points' => 3],
+                            ]
+                        ]
+                    ]
+                ],
+                [
+                    'name' => 'ختبار سبنس للقلق لدى المراهقين',
+                    'description' => 'مقياس بيك للاكتئاب هو أداة تشخيصية تُستخدم لتقييم شدة الاكتئاب لدى الأفراد. يتكون المقياس من 21 سؤالاً، كل سؤال يحتوي على 4 إجابات متدرجة من الأقل إلى الأكثر شدة. يتم اختيار الإجابة التي تعبر عن شعورك خلال الأسبوعين الماضيين. بعد الانتهاء، سيتم حساب النقاط لتحديد مستوى الاكتئاب لديك',
+                    'questions' => [
+                        [
+                            'question' => 'تنتابني مشاعر التوتر من بعض الأشياء الغير واضحة لدي',
+                            'answers' => [
+                                ['answer' => 'لا', 'points' => 0],
+                                ['answer' => 'أحيانًا', 'points' => 1],
+                                ['answer' => 'عادة', 'points' => 2],
+                                ['answer' => 'دائمًا', 'points' => 3],
+                            ]
+                        ],
+                        [
+                            'question' => 'أخاف من العتمة في الليل',
+                            'answers' => [
+                                ['answer' => 'لا', 'points' => 0],
+                                ['answer' => 'أحيانًا', 'points' => 1],
+                                ['answer' => 'عادة', 'points' => 2],
+                                ['answer' => 'دائمًا', 'points' => 3],
+                            ]
+                        ],
+                        [
+                            'question' => 'عندما أتعرض لمشكلة أشعر بألم في بطني',
+                            'answers' => [
+                                ['answer' => 'لا', 'points' => 0],
+                                ['answer' => 'أحيانًا', 'points' => 1],
+                                ['answer' => 'عادة', 'points' => 2],
+                                ['answer' => 'دائمًا', 'points' => 3],
+                            ]
+                        ],
+                        [
+                            'question' => 'أشعر بالخوف',
+                            'answers' => [
+                                ['answer' => 'لا', 'points' => 0],
+                                ['answer' => 'أحيانًا', 'points' => 1],
+                                ['answer' => 'عادة', 'points' => 2],
+                                ['answer' => 'دائمًا', 'points' => 3],
+                            ]
+                        ],
+                        [
+                            'question' => 'أشعر بالخوف عندما أكون بمفردي في البيت',
+                            'answers' => [
+                                ['answer' => 'لا', 'points' => 0],
+                                ['answer' => 'أحيانًا', 'points' => 1],
+                                ['answer' => 'عادة', 'points' => 2],
+                                ['answer' => 'دائمًا', 'points' => 3],
+                            ]
+                        ],
+                        [
+                            'question' => 'أشعر بالرهبة عند ذهابي للامتحان',
+                            'answers' => [
+                                ['answer' => 'لا', 'points' => 0],
+                                ['answer' => 'أحيانًا', 'points' => 1],
+                                ['answer' => 'عادة', 'points' => 2],
+                                ['answer' => 'دائمًا', 'points' => 3],
+                            ]
+                        ],
+                        [
+                            'question' => 'أشعر بالخوف عند استخدامي للحمام خارج البيت',
+                            'answers' => [
+                                ['answer' => 'لا', 'points' => 0],
+                                ['answer' => 'أحيانًا', 'points' => 1],
+                                ['answer' => 'عادة', 'points' => 2],
+                                ['answer' => 'دائمًا', 'points' => 3],
+                            ]
+                        ],
+                        [
+                            'question' => 'أشعر بالضيق عندما أكون بعيداً عن والدي',
+                            'answers' => [
+                                ['answer' => 'لا', 'points' => 0],
+                                ['answer' => 'أحيانًا', 'points' => 1],
+                                ['answer' => 'عادة', 'points' => 2],
+                                ['answer' => 'دائمًا', 'points' => 3],
+                            ]
+                        ],
+                        [
+                            'question' => 'أشعر بالخوف من أن أبدو غبياً أمام الآخرين',
+                            'answers' => [
+                                ['answer' => 'لا', 'points' => 0],
+                                ['answer' => 'أحيانًا', 'points' => 1],
+                                ['answer' => 'عادة', 'points' => 2],
+                                ['answer' => 'دائمًا', 'points' => 3],
+                            ]
+                        ],
+                        [
+                            'question' => 'أتوتر عند عدم قيامي بواجبي المدرسي على أكمل وجه',
+                            'answers' => [
+                                ['answer' => 'لا', 'points' => 0],
+                                ['answer' => 'أحيانًا', 'points' => 1],
+                                ['answer' => 'عادة', 'points' => 2],
+                                ['answer' => 'دائمًا', 'points' => 3],
+                            ]
+                        ],
+                        [
+                            'question' => 'أنا محبوب بين زملائي في نفس عمري',
+                            'answers' => [
+                                ['answer' => 'لا', 'points' => 0],
+                                ['answer' => 'أحيانًا', 'points' => 1],
+                                ['answer' => 'عادة', 'points' => 2],
+                                ['answer' => 'دائمًا', 'points' => 3],
+                            ]
+                        ],
+                        [
+                            'question' => 'تراودني أفكار بأن هناك شيء سيء سيحدث في عائلتي',
+                            'answers' => [
+                                ['answer' => 'لا', 'points' => 0],
+                                ['answer' => 'أحيانًا', 'points' => 1],
+                                ['answer' => 'عادة', 'points' => 2],
+                                ['answer' => 'دائمًا', 'points' => 3],
+                            ]
+                        ],
+                        [
+                            'question' => 'أصاب بنوبات من ضيق التنفس بدون سبب واضح',
+                            'answers' => [
+                                ['answer' => 'لا', 'points' => 0],
+                                ['answer' => 'أحيانًا', 'points' => 1],
+                                ['answer' => 'عادة', 'points' => 2],
+                                ['answer' => 'دائمًا', 'points' => 3],
+                            ]
+                        ],
+                        [
+                            'question' => 'أستمر في تفقد الأشياء التي أعملها عدة مرات )مثل التأكد من أن النور مطفئ، باب البيت مقفول(',
+                            'answers' => [
+                                ['answer' => 'لا', 'points' => 0],
+                                ['answer' => 'أحيانًا', 'points' => 1],
+                                ['answer' => 'عادة', 'points' => 2],
+                                ['answer' => 'دائمًا', 'points' => 3],
+                            ]
+                        ],
+                        [
+                            'question' => 'أشعر بالخوف عندما أنام لوحدي',
+                            'answers' => [
+                                ['answer' => 'لا', 'points' => 0],
+                                ['answer' => 'أحيانًا', 'points' => 1],
+                                ['answer' => 'عادة', 'points' => 2],
+                                ['answer' => 'دائمًا', 'points' => 3],
+                            ]
+                        ],
+                        [
+                            'question' => 'أجد صعوبة في الذهاب للمدرسة في الصباح لأنني أشعر بالخوف والتوتر',
+                            'answers' => [
+                                ['answer' => 'لا', 'points' => 0],
+                                ['answer' => 'أحيانًا', 'points' => 1],
+                                ['answer' => 'عادة', 'points' => 2],
+                                ['answer' => 'دائمًا', 'points' => 3],
+                            ]
+                        ],
+                        [
+                            'question' => 'أنا جيد في الرياضة',
+                            'answers' => [
+                                ['answer' => 'لا', 'points' => 0],
+                                ['answer' => 'أحيانًا', 'points' => 1],
+                                ['answer' => 'عادة', 'points' => 2],
+                                ['answer' => 'دائمًا', 'points' => 3],
+                            ]
+                        ],
+                        [
+                            'question' => 'أخاف من الكلاب والقطط',
+                            'answers' => [
+                                ['answer' => 'لا', 'points' => 0],
+                                ['answer' => 'أحيانًا', 'points' => 1],
+                                ['answer' => 'عادة', 'points' => 2],
+                                ['answer' => 'دائمًا', 'points' => 3],
+                            ]
+                        ],
+                        [
+                            'question' => 'لا أستطيع التغلب على بعض الأفكار السخيفة أو السيئة التي في رأسي',
+                            'answers' => [
+                                ['answer' => 'لا', 'points' => 0],
+                                ['answer' => 'أحيانًا', 'points' => 1],
+                                ['answer' => 'عادة', 'points' => 2],
+                                ['answer' => 'دائمًا', 'points' => 3],
+                            ]
+                        ],
+                        [
+                            'question' => 'عندما أقع في مشكلة يخفق قلبي بشدة',
+                            'answers' => [
+                                ['answer' => 'لا', 'points' => 0],
+                                ['answer' => 'أحيانًا', 'points' => 1],
+                                ['answer' => 'عادة', 'points' => 2],
+                                ['answer' => 'دائمًا', 'points' => 3],
+                            ]
+                        ],
+                        [
+                            'question' => 'أصاب فجأة بالرعشة في كل جسمي بدون سبب',
+                            'answers' => [
+                                ['answer' => 'لا', 'points' => 0],
+                                ['answer' => 'أحيانًا', 'points' => 1],
+                                ['answer' => 'عادة', 'points' => 2],
+                                ['answer' => 'دائمًا', 'points' => 3],
+                            ]
+                        ],
+                        [
+                            'question' => 'أشعر بأن أشياء سيئة سوف تحدث لي',
+                            'answers' => [
+                                ['answer' => 'لا', 'points' => 0],
+                                ['answer' => 'أحيانًا', 'points' => 1],
+                                ['answer' => 'عادة', 'points' => 2],
+                                ['answer' => 'دائمًا', 'points' => 3],
+                            ]
+                        ],
+                        [
+                            'question' => 'أخاف من الذهاب لطبيب الأسنان أو الطبيب العام',
+                            'answers' => [
+                                ['answer' => 'لا', 'points' => 0],
+                                ['answer' => 'أحيانًا', 'points' => 1],
+                                ['answer' => 'عادة', 'points' => 2],
+                                ['answer' => 'دائمًا', 'points' => 3],
+                            ]
+                        ],
+                        [
+                            'question' => 'أشعر بالرعشة عندما أكون في مشكلة',
+                            'answers' => [
+                                ['answer' => 'لا', 'points' => 0],
+                                ['answer' => 'أحيانًا', 'points' => 1],
+                                ['answer' => 'عادة', 'points' => 2],
+                                ['answer' => 'دائمًا', 'points' => 3],
+                            ]
+                        ],
+                        [
+                            'question' => 'أخاف من الأماكن العالية ومن ركوب المصعد',
+                            'answers' => [
+                                ['answer' => 'لا', 'points' => 0],
+                                ['answer' => 'أحيانًا', 'points' => 1],
+                                ['answer' => 'عادة', 'points' => 2],
+                                ['answer' => 'دائمًا', 'points' => 3],
+                            ]
+                        ],
+                        [
+                            'question' => 'أنا شخصية جيدة',
+                            'answers' => [
+                                ['answer' => 'لا', 'points' => 0],
+                                ['answer' => 'أحيانًا', 'points' => 1],
+                                ['answer' => 'عادة', 'points' => 2],
+                                ['answer' => 'دائمًا', 'points' => 3],
+                            ]
+                        ],
+                        [
+                            'question' => 'لإيقاف أشياء سيئة قد تحدث لي أفكر في أشياء مثل بعض الأرقام والكلمات',
+                            'answers' => [
+                                ['answer' => 'لا', 'points' => 0],
+                                ['answer' => 'أحيانًا', 'points' => 1],
+                                ['answer' => 'عادة', 'points' => 2],
+                                ['answer' => 'دائمًا', 'points' => 3],
+                            ]
+                        ],
+                        [
+                            'question' => 'أخاف من السفر في السيارة أو الباص',
+                            'answers' => [
+                                ['answer' => 'لا', 'points' => 0],
+                                ['answer' => 'أحيانًا', 'points' => 1],
+                                ['answer' => 'عادة', 'points' => 2],
+                                ['answer' => 'دائمًا', 'points' => 3],
+                            ]
+                        ],
+                        [
+                            'question' => 'أشعر بالتوتر بما يظنه الناس بي',
+                            'answers' => [
+                                ['answer' => 'لا', 'points' => 0],
+                                ['answer' => 'أحيانًا', 'points' => 1],
+                                ['answer' => 'عادة', 'points' => 2],
+                                ['answer' => 'دائمًا', 'points' => 3],
+                            ]
+                        ],
+                        [
+                            'question' => 'أخاف من الأماكن المزدحمة',
+                            'answers' => [
+                                ['answer' => 'لا', 'points' => 0],
+                                ['answer' => 'أحيانًا', 'points' => 1],
+                                ['answer' => 'عادة', 'points' => 2],
+                                ['answer' => 'دائمًا', 'points' => 3],
+                            ]
+                        ],
+                        [
+                            'question' => 'أشعر بالسعادة',
+                            'answers' => [
+                                ['answer' => 'لا', 'points' => 0],
+                                ['answer' => 'أحيانًا', 'points' => 1],
+                                ['answer' => 'عادة', 'points' => 2],
+                                ['answer' => 'دائمًا', 'points' => 3],
+                            ]
+                        ],
+                        [
+                            'question' => 'أشعر فجأة بالخوف الشديد بدون سبب',
+                            'answers' => [
+                                ['answer' => 'لا', 'points' => 0],
+                                ['answer' => 'أحيانًا', 'points' => 1],
+                                ['answer' => 'عادة', 'points' => 2],
+                                ['answer' => 'دائمًا', 'points' => 3],
+                            ]
+                        ],
+                        [
+                            'question' => 'أخاف من الحشرات',
+                            'answers' => [
+                                ['answer' => 'لا', 'points' => 0],
+                                ['answer' => 'أحيانًا', 'points' => 1],
+                                ['answer' => 'عادة', 'points' => 2],
+                                ['answer' => 'دائمًا', 'points' => 3],
+                            ]
+                        ],
+                        [
+                            'question' => 'أصاب فجأة بالدوار والدوخة بدون سبب',
+                            'answers' => [
+                                ['answer' => 'لا', 'points' => 0],
+                                ['answer' => 'أحيانًا', 'points' => 1],
+                                ['answer' => 'عادة', 'points' => 2],
+                                ['answer' => 'دائمًا', 'points' => 3],
+                            ]
+                        ],
+                        [
+                            'question' => 'أخشى من الوقوف في الفصل والتحدث أمام زملائي',
+                            'answers' => [
+                                ['answer' => 'لا', 'points' => 0],
+                                ['answer' => 'أحيانًا', 'points' => 1],
+                                ['answer' => 'عادة', 'points' => 2],
+                                ['answer' => 'دائمًا', 'points' => 3],
+                            ]
+                        ],
+                        [
+                            'question' => 'يبدأ قلبي بالخفقان بسرعة بدون سبب',
+                            'answers' => [
+                                ['answer' => 'لا', 'points' => 0],
+                                ['answer' => 'أحيانًا', 'points' => 1],
+                                ['answer' => 'عادة', 'points' => 2],
+                                ['answer' => 'دائمًا', 'points' => 3],
+                            ]
+                        ],
+                        [
+                            'question' => 'أشعر بالرهبة من شيء غير موجود',
+                            'answers' => [
+                                ['answer' => 'لا', 'points' => 0],
+                                ['answer' => 'أحيانًا', 'points' => 1],
+                                ['answer' => 'عادة', 'points' => 2],
+                                ['answer' => 'دائمًا', 'points' => 3],
+                            ]
+                        ],
+                        [
+                            'question' => 'أحب نفسي',
+                            'answers' => [
+                                ['answer' => 'لا', 'points' => 0],
+                                ['answer' => 'أحيانًا', 'points' => 1],
+                                ['answer' => 'عادة', 'points' => 2],
+                                ['answer' => 'دائمًا', 'points' => 3],
+                            ]
+                        ],
+                        [
+                            'question' => 'أخاف من الأماكن الضيقة مثل الغرف الصغيرة',
+                            'answers' => [
+                                ['answer' => 'لا', 'points' => 0],
+                                ['answer' => 'أحيانًا', 'points' => 1],
+                                ['answer' => 'عادة', 'points' => 2],
+                                ['answer' => 'دائمًا', 'points' => 3],
+                            ]
+                        ],
+                        [
+                            'question' => 'أقوم بعمل أشياء عدة مرات )مثل غسل اليدين – التنظيف – ترتيب الأشياء بطريقة معينة(',
+                            'answers' => [
+                                ['answer' => 'لا', 'points' => 0],
+                                ['answer' => 'أحيانًا', 'points' => 1],
+                                ['answer' => 'عادة', 'points' => 2],
+                                ['answer' => 'دائمًا', 'points' => 3],
+                            ]
+                        ],
+                        [
+                            'question' => 'أصاب بالتوتر من الأفكار والصور السخيفة والسيئة التي تدور في رأسي',
+                            'answers' => [
+                                ['answer' => 'لا', 'points' => 0],
+                                ['answer' => 'أحيانًا', 'points' => 1],
+                                ['answer' => 'عادة', 'points' => 2],
+                                ['answer' => 'دائمًا', 'points' => 3],
+                            ]
+                        ],
+                        [
+                            'question' => 'أفعل أشياء صحيحة لكي أتجنب أشياء سيئة قد تحدث لي',
+                            'answers' => [
+                                ['answer' => 'لا', 'points' => 0],
+                                ['answer' => 'أحيانًا', 'points' => 1],
+                                ['answer' => 'عادة', 'points' => 2],
+                                ['answer' => 'دائمًا', 'points' => 3],
+                            ]
+                        ],
+                        [
+                            'question' => 'أفخر بعملي المدرسي',
+                            'answers' => [
+                                ['answer' => 'لا', 'points' => 0],
+                                ['answer' => 'أحيانًا', 'points' => 1],
+                                ['answer' => 'عادة', 'points' => 2],
+                                ['answer' => 'دائمًا', 'points' => 3],
+                            ]
+                        ],
+                        [
+                            'question' => 'أشعر بالرهبة في الليل عندما أكون خارج البيت',
+                            'answers' => [
+                                ['answer' => 'لا', 'points' => 0],
+                                ['answer' => 'أحيانًا', 'points' => 1],
+                                ['answer' => 'عادة', 'points' => 2],
+                                ['answer' => 'دائمًا', 'points' => 3],
+                            ]
+                        ],
+                        [
+                            'question' => 'هل هناك أشياء أخرى تخاف منها؟',
+                            'answers' => [
+                                ['answer' => 'نعم', 'points' => 1],
+                                ['answer' => 'لا', 'points' => 0],
                             ]
                         ],
                     ]
-                ]
+                ],
             ];
 
 
