@@ -93,7 +93,11 @@ class AuthController extends Controller
 
         return ApiResponse::sendResponse(200, 'تم انشاء الحساب بنجاح', [
             'token' => $token,
-            'user'  => $user,
+            'user'  => [
+                'name'     => $user->name,
+                'username' => $user->username,
+                'email'    => $user->email,
+            ],
         ]);
     }
 
