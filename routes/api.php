@@ -48,10 +48,18 @@ Route::middleware('auth:api')->group(function () {
     Route::apiResource('user', UserController::class);
     Route::apiResource('post.comment', CommentController::class)->shallow();
     Route::apiResource('mood-entries', MoodEntryController::class);
+    Route::apiResource('reaction', ReactionController::class);
+    Route::apiResource('blog', BlogController::class);
 
-    Route::post('storeResults/{testId}', [TestController::class, 'storeResults']);
+    Route::controller(TestController::class)->group(function () {
+        Route::post('calculateScore/{id}', 'calculateScore');
+    });
+
     Route::apiResource('test', TestController::class);
+<<<<<<< HEAD
 
     Route::ApiResource('reaction', ReactionController::class);
     Route::resource('blog', BlogController::class);
+=======
+>>>>>>> aaed4497c724699c7c685fd4aa728e05723b77c8
 });
