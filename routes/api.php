@@ -54,5 +54,4 @@ Route::middleware('auth:api')->group(function () {
     Route::controller(TestController::class)->group(function () {
         Route::post('calculateScore/{id}', 'calculateScore');
     });
-
 });

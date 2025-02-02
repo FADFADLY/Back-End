@@ -1,86 +1,61 @@
-<?php 
+<?php
 
 namespace App\Http\Controllers;
 
+use App\Helpers\ApiResponse;
+use App\Models\Blog;
 use Illuminate\Http\Request;
 
-class BlogController extends Controller 
+class BlogController extends Controller
 {
+    /**
+     * Display a listing of the resource.
+     */
+    public function index()
+    {
+        $blogs = Blog::latest()->get();
+        if(count($blogs) > 0) {
+            return ApiResponse::sendResponse(200, 'Blogs Retrieved Successfully', $blogs);
+        }
+        return ApiResponse::sendResponse(200, 'Blogs are empty', []);
+    }
 
-  /**
-   * Display a listing of the resource.
-   *
-   * @return Response
-   */
-  public function index()
-  {
-    
-  }
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'title' => ['required', 'string', 'max:255'],
+            'image' => ['required', 'string'],
+            'body' => ['required', 'string'],
+        ], [
+            'title.required' => 'العنوان مطلوب',
+            'body.required' => 'المحتوى مطلوب',
+        ]);
+    }
 
-  /**
-   * Show the form for creating a new resource.
-   *
-   * @return Response
-   */
-  public function create()
-  {
-    
-  }
+    /**
+     * Display the specified resource.
+     */
+    public function show(Blog $blog)
+    {
+        return ApiResponse::sendResponse(200, 'Blog Retrieved Successfully', $blog);
+    }
 
-  /**
-   * Store a newly created resource in storage.
-   *
-   * @return Response
-   */
-  public function store(Request $request)
-  {
-    
-  }
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, Blog $blog)
+    {
+        //
+    }
 
-  /**
-   * Display the specified resource.
-   *
-   * @param  int  $id
-   * @return Response
-   */
-  public function show($id)
-  {
-    
-  }
-
-  /**
-   * Show the form for editing the specified resource.
-   *
-   * @param  int  $id
-   * @return Response
-   */
-  public function edit($id)
-  {
-    
-  }
-
-  /**
-   * Update the specified resource in storage.
-   *
-   * @param  int  $id
-   * @return Response
-   */
-  public function update($id)
-  {
-    
-  }
-
-  /**
-   * Remove the specified resource from storage.
-   *
-   * @param  int  $id
-   * @return Response
-   */
-  public function destroy($id)
-  {
-    
-  }
-  
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(Blog $blog)
+    {
+        //
+    }
 }
-
-?>
