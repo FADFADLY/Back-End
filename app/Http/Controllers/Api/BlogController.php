@@ -1,8 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
 use App\Helpers\ApiResponse;
+use App\Http\Controllers\Controller;
+use App\Http\Controllers\Validator;
 use App\Models\Blog;
 use Illuminate\Http\Request;
 

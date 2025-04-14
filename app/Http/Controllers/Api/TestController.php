@@ -1,24 +1,59 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
+use App\Models\Question;
 use App\Models\Test;
+use App\Traits\ApiResponse;
 use Illuminate\Http\Request;
 
 class TestController extends Controller
 {
+    use ApiResponse;
+
+    public function index()
+    {
+        $tests = Test::select('id', 'name')->get();
+
+        if ($tests->isEmpty()) {
+            return $this->errorResponse('لا توجد اختبارات متاحة', 404);
+        }
+
+        return $this->successResponse($tests, 'تم جلب الاختبارات بنجاح', 200);
+    }
+
     public function show($testId)
     {
-        $test = Test::select('id', 'name', 'description')->with(['questions.answers' => function ($query) {
-            $query->select('id', 'answer', 'points', 'question_id');
-        }])->findOrFail($testId);
+        $test = Test::select('id', 'name', 'description')->find($testId);
 
-        return response()->json($test);
+        if (!$test) {
+            return $this->errorResponse('الاختبار غير موجود', 404);
+        }
+
+        return $this->successResponse($test, 'وصف الاختبار', 200);
+    }
+
+    public function getQuestions($testId)
+    {
+        $question = Question::where('test_id', $testId)
+            ->select('id', 'question', 'test_id')
+            ->with('answers:id,answer,question_id')
+            ->get(['id', 'question', 'test_id']);
+
+        if ($question->isEmpty()) {
+            return $this->errorResponse('لا توجد أسئلة لهذا الاختبار', 404);
+        }
+        return $this->successResponse($question, 'تم جلب الأسئلة بنجاح', 200);
     }
 
     public function calculateScore($testId, Request $request)
     {
         $test = Test::with('questions.answers')->findOrFail($testId);
+
+        if (!$test) {
+            return $this->errorResponse('الاختبار غير موجود', 404);
+        }
 
         $score = 0;
         $result = '';
@@ -34,6 +69,8 @@ class TestController extends Controller
                 }
             }
         }
+
+
 
         if ($testId == 1) {
             if ($score <= 9) {
@@ -67,9 +104,9 @@ class TestController extends Controller
             }
         }
 
-        return response()->json([
+        return $this->successResponse([
             'score' => $score,
             'result' => $result,
-        ]);
+        ], 'تم حساب النتيجة بنجاح', 200);
     }
 }

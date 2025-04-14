@@ -6,8 +6,17 @@ use Illuminate\Database\Eloquent\Model;
 
 class Post extends Model
 {
-    public mixed $id;
-    protected $fillable = ['body','user_id'];
+    protected $fillable = [
+        'content',
+        'user_id',
+        'type',
+        'attachment',
+    ];
+
+    protected $casts = [
+        'attachment' => 'array',
+        'type' => 'string',
+    ];
 
     public function user()
     {
@@ -22,5 +31,15 @@ class Post extends Model
     public function reactions()
     {
         return $this->morphMany(Reaction::class, 'reactable');
+    }
+
+    public function location()
+    {
+        return $this->hasOne(PostLocation::class);
+    }
+
+    public function pollOptions()
+    {
+        return $this->hasMany(PollOption::class);
     }
 }
