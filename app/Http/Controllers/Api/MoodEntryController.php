@@ -13,11 +13,25 @@ class MoodEntryController extends Controller
     use ApiResponse;
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'mood'    => 'required|in:happy,neutral,sad,angry,crying',
-            'feeling' => 'nullable|string',
-            'notes'   => 'nullable|string',
-        ]);
+        try {
+            $validated = $request->validate([
+                'mood'    => 'required|in:happy,neutral,sad,angry,crying',
+                'feeling' => 'required|string',
+                'notes'   => 'nullable|string',
+            ],[
+                'mood.required'    => 'الحالة المزاجية مطلوبة',
+                'mood.in'          => 'الحالة المزاجية يجب أن تكون واحدة من: happy, neutral, sad, angry, crying',
+                'feeling.required' => 'الشعور مطلوب',
+                'notes.string'     => 'الملاحظات يجب أن تكون نصًا',
+            ]);
+        }
+        catch (\Exception $e) {
+            return $this->validationErrorResponse($e, [
+                'mood',
+                'feeling',
+                'notes',
+            ], 'خطأ في البيانات المدخلة');
+        }
 
         $moodEntry = MoodEntry::create([
             'user_id'    => auth()->id(),
@@ -28,11 +42,11 @@ class MoodEntryController extends Controller
         ]);
 
         if(!$moodEntry) {
-            return $this->errorResponse('فشل في إنشاء الحالة المزاجية', 500);
+            return $this->errorResponse([],'فشل في إنشاء الحالة المزاجية', 500);
         }
 
         return $this->successResponse(
-            null,
+            [],
             'تم إنشاء الحالة المزاجية بنجاح',
             201
         );
@@ -71,7 +85,7 @@ class MoodEntryController extends Controller
         });
 
         if ($moodEntries->isEmpty()) {
-            return $this->errorResponse('لا توجد حالات مزاجية مسجلة', 404);
+            return $this->errorResponse([],'لا توجد حالات مزاجية مسجلة', 404);
         }
 
         return $this->successResponse(
@@ -87,7 +101,7 @@ class MoodEntryController extends Controller
         $moodEntry = MoodEntry::find($id)->select('id', 'entry_date', 'mood', 'feeling', 'notes')->first();
 
         if (!$moodEntry) {
-            return $this->errorResponse('الحالة المزاجية غير موجودة', 404);
+            return $this->errorResponse([],'الحالة المزاجية غير موجودة', 404);
         }
 
         $moodEntry->day_of_week = Carbon::parse($moodEntry->entry_date)->format('l');

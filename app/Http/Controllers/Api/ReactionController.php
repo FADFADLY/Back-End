@@ -13,18 +13,24 @@ class ReactionController extends Controller
 {
     use ApiResponse;
 
-
-    // Store a new reaction
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'id' => 'required|integer',
-            'type' => 'required|string|in:post,comment',
-        ],[
-            'id.required' => 'reactable_id is required',
-            'type.required' => 'reactable_type is required',
-            'type.in' => 'reactable_type must be either post or comment',
-        ]);
+        try {
+            $validated = $request->validate([
+                'id' => 'required|integer',
+                'type' => 'required|string|in:post,comment',
+            ],[
+                'id.required' => 'reactable_id is required',
+                'type.required' => 'reactable_type is required',
+                'type.in' => 'reactable_type must be either post or comment',
+            ]);
+        }
+        catch (\Exception $e) {
+            return $this->validationErrorResponse($e, [
+                'id',
+                'type',
+            ], 'خطأ في البيانات المدخلة');
+        }
 
         $reactionType = null;
         if ($validated['type'] === 'post') {
@@ -40,7 +46,7 @@ class ReactionController extends Controller
         if ($existingReaction) {
             $existingReaction->delete();
             return $this->successResponse(
-                null,
+                [],
                 'تم حذف التفاعل  بنجاح',
                 200
             );
@@ -53,7 +59,7 @@ class ReactionController extends Controller
         ]);
 
         return $this->successResponse(
-            null,
+            [],
             'تم اضافة التفاعل  بنجاح',
             201
         );

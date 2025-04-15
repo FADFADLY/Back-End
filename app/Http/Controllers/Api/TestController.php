@@ -17,7 +17,7 @@ class TestController extends Controller
         $tests = Test::select('id', 'name')->get();
 
         if ($tests->isEmpty()) {
-            return $this->errorResponse('لا توجد اختبارات متاحة', 404);
+            return $this->errorResponse([],'لا توجد اختبارات متاحة', 404);
         }
 
         return $this->successResponse($tests, 'تم جلب الاختبارات بنجاح', 200);
@@ -28,7 +28,7 @@ class TestController extends Controller
         $test = Test::select('id', 'name', 'description')->find($testId);
 
         if (!$test) {
-            return $this->errorResponse('الاختبار غير موجود', 404);
+            return $this->errorResponse([],'الاختبار غير موجود', 404);
         }
 
         return $this->successResponse($test, 'وصف الاختبار', 200);
@@ -42,7 +42,7 @@ class TestController extends Controller
             ->get(['id', 'question', 'test_id']);
 
         if ($question->isEmpty()) {
-            return $this->errorResponse('لا توجد أسئلة لهذا الاختبار', 404);
+            return $this->errorResponse([],'لا توجد أسئلة لهذا الاختبار', 404);
         }
         return $this->successResponse($question, 'تم جلب الأسئلة بنجاح', 200);
     }
@@ -52,7 +52,7 @@ class TestController extends Controller
         $test = Test::with('questions.answers')->findOrFail($testId);
 
         if (!$test) {
-            return $this->errorResponse('الاختبار غير موجود', 404);
+            return $this->errorResponse([],'الاختبار غير موجود', 404);
         }
 
         $score = 0;
@@ -69,9 +69,9 @@ class TestController extends Controller
                 }
             }
         }
-
-
-
+        if ($score < 0) {
+            return $this->errorResponse([],'الدرجة غير صحيحة', 400);
+        }
         if ($testId == 1) {
             if ($score <= 9) {
                 $result = 'قلق منخفض';

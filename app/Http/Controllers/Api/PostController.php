@@ -24,7 +24,7 @@ class PostController extends Controller
             ->get();
 
         if ($posts->isEmpty()) {
-            return $this->errorResponse('لا توجد منشورات', 404);
+            return $this->errorResponse([],'لا توجد منشورات', 404);
         }
 
 
@@ -36,13 +36,21 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'content' => 'required|string',
-            'attachment' => 'nullable',
-            'type' => 'nullable|string',
-        ], [
-            'content.required' => 'المحتوى مطلوب',
-        ]);
+        try {
+            $validated = $request->validate([
+                'content' => 'required|string',
+                'attachment' => 'nullable',
+                'type' => 'nullable|string',
+            ], [
+                'content.required' => 'المحتوى مطلوب',
+            ]);
+        }catch (\Exception $e){
+            return $this->validationErrorResponse($e,[
+                'content',
+                'attachment',
+                'type'
+            ],'خطأ في البيانات المدخلة');
+        }
 
         $typeEnum = AttachmentTypeEnum::fromLabel($validated['type'] ?? 'text');
 
@@ -51,11 +59,10 @@ class PostController extends Controller
             'content' => $validated['content'],
             'user_id' => auth()->id(),
             'type' => $typeEnum->value,
-            'attachment' => $validated['attachment'] ,
         ]);
 
         if (!$post) {
-            return $this->errorResponse('حدث خطأ اثناء انشاء المنشور', 500);
+            return $this->errorResponse([],'حدث خطأ اثناء انشاء المنشور', 500);
         }
 
         if ($typeEnum === AttachmentTypeEnum::POLL) {
@@ -86,13 +93,13 @@ class PostController extends Controller
             }
         }
 
-        if ($request->hasFile('attachment')) {
 
+        if ($request->hasFile('attachment')) {
             $path = $request->file('attachment')->store('attachments' ,'public');
             $post->update(['attachment' => $path]);
         }
 
-        return $this->successResponse(null, 'تم إنشاء المنشور بنجاح', 201);
+        return $this->successResponse([], 'تم إنشاء المنشور بنجاح', 201);
     }
 
     public function show(Post $post)
@@ -101,7 +108,7 @@ class PostController extends Controller
         $post->with('reactions.user:id,name');
 
         if (!$post) {
-            return $this->errorResponse('المنشور غير موجود', 404);
+            return $this->errorResponse([],'المنشور غير موجود', 404);
         }
 
         $reactions = $post->reactions->map(function ($reaction) {
@@ -123,21 +130,28 @@ class PostController extends Controller
      */
     public function update(Request $request, Post $post)
     {
-        $validated = $request->validate([
-            'content' => 'required|string',
-        ], [
-            'content.required' => 'المحتوى مطلوب',
-        ]);
+        try {
+            $validated = $request->validate([
+                'content' => 'required|string',
+            ], [
+                'content.required' => 'المحتوى مطلوب',
+            ]);
+        }
+        catch (\Exception $e) {
+            return $this->validationErrorResponse($e, [
+                'content',
+            ], 'فشل في تحديث المنشور');
+        }
 
         if(!$post) {
-            return $this->errorResponse('حدث خطأ اثناء تحديث المنشور', 500);
+            return $this->errorResponse([],'حدث خطأ اثناء تحديث المنشور', 500);
         }
 
         $post->update([
             'content'  => $validated['content'],
         ]);
 
-        return $this->successResponse(null, 'تم تحديث المنشور بنجاح', 200);
+        return $this->successResponse([], 'تم تحديث المنشور بنجاح', 200);
     }
 
     /**
@@ -146,11 +160,11 @@ class PostController extends Controller
     public function destroy(Post $post)
     {
         if (!$post) {
-            return $this->errorResponse('المنشور غير موجود', 404);
+            return $this->errorResponse([],'المنشور غير موجود', 404);
         }
 
         $post->delete();
 
-        return $this->successResponse(null, 'تم حذف المنشور بنجاح', 200);
+        return $this->successResponse([], 'تم حذف المنشور بنجاح', 200);
     }
 }

@@ -30,11 +30,11 @@ class AuthController extends Controller
         ]);
 
         if(!$user){
-            return $this->errorResponse('حدث خطأ اثناء انشاء الحساب', 500);
+            return $this->errorResponse([],'حدث خطأ اثناء انشاء الحساب', 500);
         }
 
         return $this->successResponse(
-            null,
+            [],
             'تم التسجيل بنجاح.',
             201
         );
@@ -42,18 +42,21 @@ class AuthController extends Controller
     }
     public function login(Request $request)
     {
-        $request->validate([
-            'email'    => 'required|email',
-            'password' => 'required|string',
-        ],[
-                'email.required' => 'البريد الالكتروني مطلوب',
-                'email.email' => 'البريد الالكتروني يجب ان يكون صالح',
+        try {
+            $request->validate([
+                'email'    => 'required|email',
+                'password' => 'required|string',
+            ],[
+                'email.required'    => 'البريد الالكتروني مطلوب',
+                'email.email'       => 'البريد الالكتروني يجب ان يكون صالح',
                 'password.required' => 'كلمة المرور مطلوبة',
-            ]
-        );
+            ]);
+        } catch (\Exception $e) {
+            return $this->validationErrorResponse($e, ['email', 'password']);
+        }
 
         if (!Auth::attempt($request->only('email', 'password'))) {
-            return $this->errorResponse('البريد الالكتروني او كلمة المرور غير صحيحة', 401);
+            return $this->errorResponse([],'البريد الالكتروني او كلمة المرور غير صحيحة', 401);
         }
 
         $user = User::where('email', $request->email)->first();
@@ -68,23 +71,27 @@ class AuthController extends Controller
                 'تم تسجيل الدخول بنجاح'
             );
         } catch (\Exception $e) {
-            return $this->errorResponse('فشل في تسجيل الدخول', 500);
+            return $this->errorResponse([],'فشل في تسجيل الدخول', 500);
         }
     }
 
     public function forgotPassword(Request $request)
     {
-        $request->validate([
-            'email' => 'required|email'
-        ],[
+        try {
+            $request->validate([
+                'email' => 'required|email'
+            ], [
                 'email.required' => 'البريد الالكتروني مطلوب',
                 'email.email' => 'البريد الالكتروني يجب ان يكون صالح',
-        ]);
+            ]);
+        } catch (\Exception $e) {
+            return $this->validationErrorResponse($e, ['email']);
+        }
 
         $user = User::where('email', $request->email)->first();
 
         if (!$user) {
-            return $this->errorResponse('البريد الالكتروني غير موجود', 404);
+            return $this->errorResponse([],'البريد الالكتروني غير موجود', 404);
         }
 
         $resetCode = rand(1000, 9999);
@@ -98,20 +105,24 @@ class AuthController extends Controller
         SendResetCodeJob::dispatchSync($user->email, $resetCode);
 
         return $this->successResponse(
-            null,
+            [],
             'تم ارسال رمز التحقق الى بريدك الالكتروني'
         );
     }
 
     public function verifyResetCode(Request $request)
     {
-        $request->validate([
-            'code' => 'required|numeric|digits:4',
-        ], [
-            'code.required' => 'رمز التحقق مطلوب',
-            'code.numeric' => 'رمز التحقق يجب ان يكون ارقام',
-            'code.digits' => 'رمز التحقق يجب أن يكون 4 أرقام',
-        ]);
+        try {
+            $request->validate([
+                'code' => 'required|integer|digits:4',
+            ], [
+                'code.required' => 'رمز التحقق مطلوب',
+                'code.integer' => 'رمز التحقق يجب ان يكون ارقام',
+                'code.digits' => 'رمز التحقق يجب ان يكون 4 ارقام',
+            ]);
+        } catch (\Exception $e) {
+            return $this->validationErrorResponse($e, ['code']);
+        }
 
         try {
             $resetCode = ResetCode::where('code', $request->code)
@@ -120,12 +131,12 @@ class AuthController extends Controller
                 ->first();
 
             if (!$resetCode) {
-                return $this->errorResponse('رمز التحقق غير صحيح او منتهي الصلاحية', 400);
+                return $this->errorResponse([],'رمز التحقق غير صحيح او منتهي الصلاحية', 400);
             }
 
             $user = User::find($resetCode->user_id);
             if (!$user) {
-                return $this->errorResponse('المستخدم غير موجود', 404);
+                return $this->errorResponse([],'المستخدم غير موجود', 404);
             }
 
             // Mark the code as used
@@ -134,26 +145,31 @@ class AuthController extends Controller
             $resetCode->save();
 
             return $this->successResponse(
-                null,
+                [],
                 'تم التحقق بنجاح، يمكنك الآن إعادة تعيين كلمة المرور'
             );
         }catch (\Exception $e){
-            return $this->errorResponse('فشل في التحقق من رمز التحقق', 500);
+            return $this->errorResponse([],'فشل في التحقق من رمز التحقق', 500);
         }
     }
 
     public function resendCode(Request $request)
     {
-        $request->validate([
-            'email' => 'required|email'
-        ],[
-            'email.required' => 'البريد الالكتروني مطلوب',
-            'email.email' => 'البريد الالكتروني يجب ان يكون صالح',
-        ]);
+        try {
+            $request->validate([
+                'email' => 'required|email'
+            ], [
+                'email.required' => 'البريد الالكتروني مطلوب',
+                'email.email' => 'البريد الالكتروني يجب ان يكون صالح',
+            ]);
+        } catch (\Exception $e) {
+            return $this->validationErrorResponse($e, ['email']);
+        }
+
         $user = User::where('email', $request->email)->first();
 
         if (!$user) {
-            return $this->errorResponse('البريد الالكتروني غير موجود', 404);
+            return $this->errorResponse([],'البريد الالكتروني غير موجود', 404);
         }
 
         $resetCode = rand(1000, 9999);
@@ -167,39 +183,43 @@ class AuthController extends Controller
         SendResetCodeJob::dispatch($user->email, $resetCode);
 
         return $this->successResponse(
-            null,
+            [],
             'تم ارسال رمز التحقق الى بريدك الالكتروني'
         );
     }
     public function resetPassword(Request $request)
     {
-      $validated =  $request->validate([
-            'email'      => 'required|email',
-            'password'   => 'required|string|min:8|confirmed',
-        ],
-        [
-            'email.required' => 'البريد الالكتروني مطلوب',
-            'email.email' => 'البريد الالكتروني يجب ان يكون صالح',
-            'password.required' => 'كلمة المرور مطلوبة',
-            'password.min' => 'كلمة المرور يجب ان تكون 8 احرف على الاقل',
-            'password.confirmed' => 'كلمة المرور غير متطابقة',
-        ]);
+        try {
+            $validated =  $request->validate([
+                'email'      => 'required|email',
+                'password'   => 'required|string|min:8|confirmed',
+            ],
+                [
+                    'email.required' => 'البريد الالكتروني مطلوب',
+                    'email.email' => 'البريد الالكتروني يجب ان يكون صالح',
+                    'password.required' => 'كلمة المرور مطلوبة',
+                    'password.min' => 'كلمة المرور يجب ان تكون 8 احرف على الاقل',
+                    'password.confirmed' => 'كلمة المرور غير متطابقة',
+                ]);
+        }catch (\Exception $e){
+            return $this->validationErrorResponse($e, ['email', 'password']);
+        }
 
 
         try {
             $user = User::where('email', $validated['email'])->first();
 
             if (!$user) {
-                return $this->errorResponse('المستخدم غير موجود', 404);
+                return $this->errorResponse([],'المستخدم غير موجود', 404);
             }
 
             $user->password = Hash::make($validated['password']);
             $user->save();
 
-            return $this->successResponse(null, 'تم إعادة تعيين كلمة المرور بنجاح');
+            return $this->successResponse([], 'تم إعادة تعيين كلمة المرور بنجاح');
 
         }catch (\Exception $e){
-            return $this->errorResponse('فشل في إعادة تعيين كلمة المرور', 500);
+            return $this->errorResponse([],'فشل في إعادة تعيين كلمة المرور', 500);
         }
 
     }
@@ -209,20 +229,9 @@ class AuthController extends Controller
         try {
             $request->user()->currentAccessToken()->delete();
 
-            return $this->successResponse(null, 'تم تسجيل الخروج بنجاح');
+            return $this->successResponse([], 'تم تسجيل الخروج بنجاح');
         } catch (\Exception $e) {
-            return $this->errorResponse('فشل في تسجيل الخروج', 500);
+            return $this->errorResponse([],'فشل في تسجيل الخروج', 500);
         }
-    }
-
-    public function getUser()
-    {
-        $users  = User::all();
-
-        if (!$users) {
-            return $this->errorResponse('المستخدم غير موجود', 404);
-        }
-
-        return $this->successResponse($users, 'تمت العملية بنجاح');
     }
 }

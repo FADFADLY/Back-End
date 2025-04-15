@@ -7,7 +7,6 @@ use App\Models\Comment;
 use App\Models\Post;
 use App\Traits\ApiResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 
 class CommentController extends Controller
 {
@@ -32,7 +31,7 @@ class CommentController extends Controller
         if ($comments->count() > 0) {
             return $this->successResponse($comments, 'تم جلب التعليقات بنجاح');
         }
-        return $this->errorResponse('لا توجد تعليقات', 404);
+        return $this->errorResponse([],'لا توجد تعليقات', 404);
 
     }
 
@@ -41,15 +40,22 @@ class CommentController extends Controller
      */
     public function store(Request $request, $post_id)
     {
-        $validated = $request->validate ([
-            'body' => ['required', 'string', 'max:255'],
-        ], [
-            'body.required' => 'المحتوى مطلوب',
-        ]);
+        try {
+            $validated = $request->validate ([
+                'body' => ['required', 'string', 'max:255'],
+            ], [
+                'body.required' => 'المحتوى مطلوب',
+            ]);
+        }
+        catch (\Exception $e) {
+            return $this->validationErrorResponse($e,[
+                'body',
+            ],'خطأ في البيانات المدخلة');
+        }
 
         $post = Post::find($post_id);
         if (!$post) {
-            return $this->errorResponse('المنشور غير موجود', 404);
+            return $this->errorResponse([],'المنشور غير موجود', 404);
         }
 
         $comment = Comment::create([
@@ -59,10 +65,10 @@ class CommentController extends Controller
         ]);
 
         if(!$comment) {
-            return $this->errorResponse('حدث خطأ اثناء انشاء التعليق', 500);
+            return $this->errorResponse([],'حدث خطأ اثناء انشاء التعليق', 500);
         }
 
-        return $this->successResponse(null, 'تم انشاء التعليق بنجاح', 201);
+        return $this->successResponse([], 'تم انشاء التعليق بنجاح', 201);
     }
 
     /**
@@ -73,7 +79,7 @@ class CommentController extends Controller
         $comment->with('reactions.user:id,name');
 
         if (!$comment) {
-            return $this->errorResponse('التعليق غير موجود', 404);
+            return $this->errorResponse([],'التعليق غير موجود', 404);
         }
         $reactions = $comment->reactions->map(function ($reaction) {
             return [
@@ -97,21 +103,28 @@ class CommentController extends Controller
      */
     public function update(Request $request, Comment $comment)
     {
-        $validated = $request->validate ([
-            'body' => ['required', 'string', 'max:255'],
-        ], [
-            'body.required' => 'المحتوى مطلوب',
-        ]);
+        try {
+            $validated = $request->validate ([
+                'body' => ['required', 'string', 'max:255'],
+            ], [
+                'body.required' => 'المحتوى مطلوب',
+            ]);
+        }
+        catch (\Exception $e) {
+            return $this->validationErrorResponse($e,[
+                'body',
+            ],'خطأ في البيانات المدخلة');
+        }
 
         if ($comment->user_id !== auth()->user()->id) {
-            return $this->errorResponse('لا يمكنك تعديل هذا التعليق', 403);
+            return $this->errorResponse([],'لا يمكنك تعديل هذا التعليق', 403);
         }
 
         $comment->update([
             'body' => $validated['body'],
         ]);
 
-        return $this->successResponse(null, 'تم تحديث التعليق بنجاح');
+        return $this->successResponse([], 'تم تحديث التعليق بنجاح');
     }
 
     /**
@@ -120,15 +133,15 @@ class CommentController extends Controller
     public function destroy(Comment $comment)
     {
         if (!$comment) {
-            return $this->errorResponse('التعليق غير موجود', 404);
+            return $this->errorResponse([],'التعليق غير موجود', 404);
         }
 
         if ($comment->user_id !== auth()->user()->id) {
-            return $this->errorResponse('لا يمكنك حذف هذا التعليق', 403);
+            return $this->errorResponse([],'لا يمكنك حذف هذا التعليق', 403);
         }
 
         $comment->delete();
 
-        return $this->successResponse(null, 'تم حذف التعليق بنجاح');
+        return $this->successResponse([], 'تم حذف التعليق بنجاح');
     }
 }

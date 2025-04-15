@@ -2,10 +2,14 @@
 
 namespace App\Http\Requests;
 
+use App\Traits\ApiResponse;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class RegisterRequest extends FormRequest
 {
+    use ApiResponse;
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -30,7 +34,6 @@ class RegisterRequest extends FormRequest
             'password'     => 'required|string|min:6|confirmed',
         ];
     }
-
     public function messages(): array
     {
         return [
@@ -49,5 +52,26 @@ class RegisterRequest extends FormRequest
             'password.min' => 'كلمة المرور يجب ان لا تقل عن 6 احرف',
             'password.confirmed' => 'كلمة المرور غير متطابقة',
         ];
+    }
+
+    protected function failedValidation(Validator $validator)
+    {
+        $allFields = array_keys($this->rules()); // كل الحقول المطلوبة في الفورم
+
+        $errors = $validator->errors()->toArray(); // اللي حصل فيها error بس
+
+        // نكمل الباقي ونخليها [] لو مفيش خطأ
+        foreach ($allFields as $field) {
+            if (!array_key_exists($field, $errors)) {
+                $errors[$field] = [];
+            }
+        }
+        throw new HttpResponseException(
+            $this->errorResponse(
+                $errors,
+                'فشل في التحقق من البيانات',
+                422
+            )
+        );
     }
 }
