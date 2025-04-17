@@ -114,8 +114,10 @@ class AuthController extends Controller
     {
         try {
             $request->validate([
+                'email' => 'required|email',
                 'code' => 'required|integer|digits:4',
             ], [
+                'email.required' => 'البريد الالكتروني مطلوب',
                 'code.required' => 'رمز التحقق مطلوب',
                 'code.integer' => 'رمز التحقق يجب ان يكون ارقام',
                 'code.digits' => 'رمز التحقق يجب ان يكون 4 ارقام',
@@ -126,6 +128,9 @@ class AuthController extends Controller
 
         try {
             $resetCode = ResetCode::where('code', $request->code)
+                ->where('user_id', function ($query) use ($request) {
+                    $query->select('id')->from('users')->where('email', $request->email);
+                })
                 ->where('is_used', false)
                 ->where('expires_at', '>', Carbon::now())
                 ->first();
