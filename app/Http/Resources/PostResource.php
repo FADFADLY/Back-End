@@ -24,7 +24,7 @@ class PostResource extends JsonResource
         }
         if ($this->type ==AttachmentTypeEnum::IMAGE->value || $this->type == AttachmentTypeEnum::AUDIO->value || $this->type == AttachmentTypeEnum::FILE->value) {
             $attachment = $this->attachment ?
-                asset('storage/' . $this->attachment) : null;
+                asset('/storage/' . $this->attachment) : null;
         }
 
         return [

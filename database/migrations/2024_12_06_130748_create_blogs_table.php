@@ -13,6 +13,10 @@ class CreateBlogsTable extends Migration {
 			$table->string('title');
 			$table->text('body');
 			$table->string('image');
+            $table->string('author');
+            $table->unsignedInteger('views_count')->default(0);
+            $table->unsignedInteger('likes_count')->default(0);
+            $table->unsignedInteger('share_count')->default(0);
             $table->timestamps();
         });
 	}
