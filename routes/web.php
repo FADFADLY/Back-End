@@ -8,10 +8,10 @@ Route::get('/', function () {
 });
 
 
-Livewire::setScriptRoute(function($handle) {
-    return Route::get('fadfadly/public/livewire/livewire.js', $handle);
-});
-
-Livewire::setUpdateRoute(function($handle) {
-    return Route::get('fadfadly/public/livewire/update', $handle);
-});
+//Livewire::setScriptRoute(function($handle) {
+//    return Route::get('fadfadly/public/livewire/livewire.js', $handle);
+//});
+//
+//Livewire::setUpdateRoute(function($handle) {
+//    return Route::get('fadfadly/public/livewire/update', $handle);
+//});
