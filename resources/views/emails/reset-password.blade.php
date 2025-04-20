@@ -83,7 +83,7 @@
 <body>
 <div class="container">
     <div class="header">
-        <img src="{{ asset('fadfadly-logo.png') }}" alt="{{ config('app.name') }}" class="logo">
+        <img src="{{ asset('images/fadfadly-logo.png') }}" alt="{{ config('app.name') }}" class="logo">
         <h2 style="color: #295163;">طلب إعادة تعيين كلمة المرور</h2>
     </div>
 
