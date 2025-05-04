@@ -2,9 +2,11 @@
 
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BlogController;
+use App\Http\Controllers\Api\ChatBotController;
 use App\Http\Controllers\Api\CommentController;
 use App\Http\Controllers\Api\MoodEntryController;
 use App\Http\Controllers\Api\PostController;
+use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\ReactionController;
 use App\Http\Controllers\Api\TestController;
 use Illuminate\Support\Facades\Route;
@@ -43,8 +45,19 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::apiResource('tests', TestController::class);
 
-    Route::controller(TestController::class)->group(function () {
-        Route::get('tests/{id}/questions', 'getQuestions');
-        Route::post('tests/{id}/score', 'calculateScore');
+    Route::post('tests/{id}', [TestController::class, 'calculateScore']);
+
+    Route::controller(ProfileController::class)->prefix('profile')->group(function () {
+        Route::get('/', 'viewProfile');
+        Route::put('/name', 'updateName');
+        Route::put('/email', 'updateEmail');
+        Route::put('/avatar', 'updateAvatar');
+        Route::put('/bio', 'updateBio');
+
+        Route::get('/posts', 'userPosts');
     });
+
+
+    Route::post('/chatbot', [ChatbotController::class, 'sendToChatbot']);
+
 });

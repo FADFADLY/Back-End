@@ -5,11 +5,13 @@ namespace App\Http\Controllers\Api;
 use App\Enums\AttachmentTypeEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\PostResource;
+use App\Jobs\AnalyzeContentJob;
 use App\Models\PollOption;
 use App\Models\Post;
 use App\Models\PostLocation;
 use App\Traits\ApiResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 
 class PostController extends Controller
 {
@@ -52,9 +54,10 @@ class PostController extends Controller
             ],'خطأ في البيانات المدخلة');
         }
 
+
+
         $typeEnum = AttachmentTypeEnum::fromLabel($validated['type'] ?? 'text');
 
-        // إنشاء البوست
         $post = Post::create([
             'content' => $validated['content'],
             'user_id' => auth()->id(),
@@ -93,13 +96,17 @@ class PostController extends Controller
             }
         }
 
-
         if ($request->hasFile('attachment')) {
             $path = $request->file('attachment')->store('attachments' ,'public');
             $post->update(['attachment' => $path]);
         }
 
-        return $this->successResponse([], 'تم إنشاء المنشور بنجاح', 201);
+        AnalyzeContentJob::dispatch(
+            $post,
+            'https://ayaibrahem12-arabic-sentiment-v2.hf.space/gradio_api/call/predict'
+        );
+
+        return $this->successResponse([], 'جاري تحليل المحتوى', 201);
     }
 
     public function show(Post $post)
@@ -151,8 +158,9 @@ class PostController extends Controller
             'content'  => $validated['content'],
         ]);
 
-        return $this->successResponse([], 'تم تحديث المنشور بنجاح', 200);
-    }
+        AnalyzeContentJob::dispatch($post, 'https://ayaibrahem12-arabic-sentiment-v2.hf.space/gradio_api/call/predict');
+
+        return $this->successResponse([], 'جاري تحليل المحتوى', 201);    }
 
     /**
      * Remove the specified resource from storage.

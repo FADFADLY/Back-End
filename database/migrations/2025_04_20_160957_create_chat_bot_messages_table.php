@@ -11,14 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('podcasts', function (Blueprint $table) {
+        Schema::create('chat_bot_messages', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
-            $table->string('author');
-            $table->unsignedInteger('number_of_episodes')->default(0);
-            $table->string('image')->nullable();
-            $table->string('audio')->nullable();
-            $table->string('link')->nullable();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->text('prompt');
+            $table->text('response')->nullable();
             $table->timestamps();
         });
     }
@@ -28,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('podcasts');
+        Schema::dropIfExists('chat_bot_messages');
     }
 };

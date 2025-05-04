@@ -11,6 +11,7 @@ class Post extends Model
         'user_id',
         'type',
         'attachment',
+        'status',
     ];
 
     protected $casts = [

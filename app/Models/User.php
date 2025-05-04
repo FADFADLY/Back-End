@@ -23,6 +23,8 @@ class User extends Authenticatable
         'gender',
         'age',
         'password',
+        'avatar',
+        'bio',
     ];
 
     /**
@@ -62,5 +64,10 @@ class User extends Authenticatable
     public function reactions()
     {
         return $this->hasMany(Reaction::class);
+    }
+
+    public function notifications()
+    {
+        return $this->hasMany(Notification::class);
     }
 }

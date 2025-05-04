@@ -25,27 +25,36 @@ class TestController extends Controller
 
     public function show($testId)
     {
-        $test = Test::select('id', 'name', 'description')->find($testId);
+        $test = Test::select('id', 'name', 'description')
+            ->with(['questions' => function($query) {
+                $query->select('id', 'question', 'test_id')
+                    ->with('answers:id,answer,question_id');
+            }])
+            ->find($testId);
 
         if (!$test) {
-            return $this->errorResponse([],'الاختبار غير موجود', 404);
+            return $this->errorResponse([], 'الاختبار غير موجود', 404);
         }
 
-        return $this->successResponse($test, 'وصف الاختبار', 200);
-    }
-
-    public function getQuestions($testId)
-    {
-        $question = Question::where('test_id', $testId)
-            ->select('id', 'question', 'test_id')
-            ->with('answers:id,answer,question_id')
-            ->get(['id', 'question', 'test_id']);
-
-        if ($question->isEmpty()) {
-            return $this->errorResponse([],'لا توجد أسئلة لهذا الاختبار', 404);
+        if ($test->questions->isEmpty()) {
+            return $this->errorResponse([], 'لا توجد أسئلة لهذا الاختبار', 404);
         }
-        return $this->successResponse($question, 'تم جلب الأسئلة بنجاح', 200);
+
+        return $this->successResponse($test, 'تم جلب بيانات الاختبار والأسئلة بنجاح', 200);
     }
+
+//    public function getQuestions($testId)
+//    {
+//        $question = Question::where('test_id', $testId)
+//            ->select('id', 'question', 'test_id')
+//            ->with('answers:id,answer,question_id')
+//            ->get(['id', 'question', 'test_id']);
+//
+//        if ($question->isEmpty()) {
+//            return $this->errorResponse([],'لا توجد أسئلة لهذا الاختبار', 404);
+//        }
+//        return $this->successResponse($question, 'تم جلب الأسئلة بنجاح', 200);
+//    }
 
     public function calculateScore($testId, Request $request)
     {

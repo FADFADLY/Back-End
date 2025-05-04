@@ -2,39 +2,35 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Helpers\ApiResponse;
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\Validator;
+use App\Http\Resources\BlogResource;
 use App\Models\Blog;
+use App\Traits\ApiResponse;
 use Illuminate\Http\Request;
 
 class BlogController extends Controller
 {
+    use ApiResponse;
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
         $blogs = Blog::latest()->get();
-        if(count($blogs) > 0) {
-            return ApiResponse::sendResponse(200, 'Blogs Retrieved Successfully', $blogs);
+
+        if ($blogs->isEmpty()) {
+            return $this->errorResponse([], 'لا توجد مدونات حالياً', 404);
         }
-        return ApiResponse::sendResponse(200, 'Blogs are empty', []);
+
+        return $this->successResponse(BlogResource::collection($blogs), 'تم جلب المدونات بنجاح');
     }
+
 
     /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'title' => ['required', 'string', 'max:255'],
-            'image' => ['required', 'string'],
-            'body' => ['required', 'string'],
-        ], [
-            'title.required' => 'العنوان مطلوب',
-            'body.required' => 'المحتوى مطلوب',
-        ]);
     }
 
     /**
@@ -42,7 +38,11 @@ class BlogController extends Controller
      */
     public function show(Blog $blog)
     {
-        return ApiResponse::sendResponse(200, 'Blog Retrieved Successfully', $blog);
+        if (!$blog) {
+            return $this->errorResponse([], 'المدونة غير موجودة', 404);
+        }
+
+        return $this->successResponse(new BlogResource($blog), 'تم جلب المدونة بنجاح');
     }
 
     /**
