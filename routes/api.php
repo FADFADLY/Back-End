@@ -1,15 +1,16 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BlogController;
+use App\Http\Controllers\Api\BookController;
+use App\Http\Controllers\Api\PostController;
+use App\Http\Controllers\Api\TestController;
 use App\Http\Controllers\Api\ChatBotController;
 use App\Http\Controllers\Api\CommentController;
-use App\Http\Controllers\Api\MoodEntryController;
-use App\Http\Controllers\Api\PostController;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\ReactionController;
-use App\Http\Controllers\Api\TestController;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\MoodEntryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -57,7 +58,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/posts', 'userPosts');
     });
 
+    Route::apiResource('books', BookController::class)->only(['index', 'show']);
 
     Route::post('/chatbot', [ChatbotController::class, 'sendToChatbot']);
-
 });
