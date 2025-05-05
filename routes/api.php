@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\CommentController;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\ReactionController;
 use App\Http\Controllers\Api\MoodEntryController;
+use App\Http\Controllers\Api\TimerController;
 
 /*
 |--------------------------------------------------------------------------
@@ -59,6 +60,13 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     Route::apiResource('books', BookController::class)->only(['index', 'show']);
+
+    Route::controller(TimerController::class)->prefix('timers')->group(function () {
+        Route::post('start', 'startOrResume');
+        Route::post('{id}/pause', 'pause');
+        Route::post('{id}/stop', 'stop');
+        Route::get('{id}/duration', 'duration');
+    });
 
     Route::post('/chatbot', [ChatbotController::class, 'sendToChatbot']);
 });
