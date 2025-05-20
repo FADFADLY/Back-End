@@ -18,6 +18,9 @@ class TestResource extends Resource
     protected static ?string $model = Test::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-clipboard-document-list';
+    protected static ?string $navigationLabel = 'الاختبارات';
+    protected static ?string $label = 'اختبار';
+    protected static ?string $pluralLabel = 'الاختبارات';
 
     public static function form(Form $form): Form
     {
@@ -31,7 +34,15 @@ class TestResource extends Resource
     {
         return $table
             ->columns([
-                //
+
+                Tables\Columns\TextColumn::make('name')
+                    ->label('اسم الاختبار')
+                    ->sortable()
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('created_at')
+                    ->label('تاريخ الانشاء')
+                    ->dateTime()
+                    ->sortable(),
             ])
             ->filters([
                 //

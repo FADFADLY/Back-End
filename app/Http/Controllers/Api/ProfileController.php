@@ -25,20 +25,14 @@ class ProfileController extends Controller
 
     public function updateAvatar(Request $request)
     {
-        $user = auth()->user();
-
-        if (!$user) {
-            return $this->errorResponse([],'خطأ في عرض البيانات', 404);
-        }
 
        try{
            $request->validate([
-               'avatar' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+               'avatar' => 'required||mimes:jpeg,png,jpg|max:2048',
            ],
                [
                    'avatar.required' => 'الصورة مطلوبة',
-                   'avatar.image' => 'يجب أن تكون الصورة صورة',
-                   'avatar.mimes' => 'يجب أن تكون الصورة من نوع jpeg, png, jpg, gif',
+                   'avatar.mimes' => 'يجب أن تكون الصورة من نوع jpeg, png, jpg',
                    'avatar.max' => 'حجم الصورة يجب أن يكون أقل من 2 ميجابايت',
                ]);
        }catch (\Exception $e){
@@ -47,9 +41,15 @@ class ProfileController extends Controller
 
         $avatarPath = $request->file('avatar')->store('avatars', 'public');
 
+        $user = auth()->user();
+
+        if (!$user) {
+            return $this->errorResponse([],'خطأ في عرض البيانات', 404);
+        }
+
         $user->update(['avatar' => $avatarPath]);
 
-        return $this->successResponse(new ProfileResource($user), 'تم تحديث الصورة بنجاح');
+        return $this->successResponse([], 'تم تحديث الصورة بنجاح');
     }
 
     public function updateName(Request $request)
@@ -70,7 +70,7 @@ class ProfileController extends Controller
             return $this->validationErrorResponse($e,['name']);
         }
         $user->update(['name' => $request->name,]);
-        return $this->successResponse(new ProfileResource($user), 'تم تحديث البيانات بنجاح');
+        return $this->successResponse([], 'تم تحديث البيانات بنجاح');
     }
 
     public function updateEmail(Request $request)
@@ -93,7 +93,7 @@ class ProfileController extends Controller
             return $this->validationErrorResponse($e,['email']);
         }
         $user->update(['email' => $request->email,]);
-        return $this->successResponse(new ProfileResource($user), 'تم تحديث البيانات بنجاح');
+        return $this->successResponse([], 'تم تحديث البيانات بنجاح');
     }
 
     public function updateBio(Request $request)
@@ -114,7 +114,7 @@ class ProfileController extends Controller
             return $this->validationErrorResponse($e,['bio']);
         }
         $user->update(['bio' => $request->bio,]);
-        return $this->successResponse(new ProfileResource($user), 'تم تحديث الحالة بنجاح');
+        return $this->successResponse([], 'تم تحديث الحالة بنجاح');
     }
 
     public function userPosts()
@@ -124,7 +124,7 @@ class ProfileController extends Controller
         if (!$user) {
             return $this->errorResponse([],'خطأ في عرض البيانات', 404);
         }
-        $posts = $user->posts();
+        $posts = $user->posts;
         if ($posts->isEmpty()) {
             return $this->errorResponse([],'لا توجد منشورات', 404);
         }

@@ -19,11 +19,24 @@ class HabitResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
+    protected static ?string $navigationLabel = 'العادات';
+    protected static ?string $pluralLabel = 'العادات';
+    protected static ?string $modelLabel = 'عادة';
+
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                //
+                Forms\Components\TextInput::make('name')
+                    ->required()
+                    ->label('اسم العادة')
+                    ->maxLength(255),
+                Forms\Components\FileUpload::make('icon')
+                    ->required()
+                    ->label('أيقونة العادة')
+                    ->image()
+                    ->directory('habit_icons')
+                    ->visibility('public'),
             ]);
     }
 
@@ -31,7 +44,15 @@ class HabitResource extends Resource
     {
         return $table
             ->columns([
-                //
+                Tables\Columns\ImageColumn::make('icon')
+                    ->label('أيقونة العادة')
+                    ->size(70),
+                Tables\Columns\TextColumn::make('name')
+                    ->label('اسم العادة')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('created_at')
+                    ->label('تاريخ الإنشاء')
+                    ->dateTime(),
             ])
             ->filters([
                 //

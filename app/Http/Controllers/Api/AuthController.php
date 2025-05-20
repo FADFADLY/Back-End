@@ -62,8 +62,12 @@ class AuthController extends Controller
         $user = User::where('email', $request->email)->first();
 
         try {
-            $token = $user->createToken('auth_token')->plainTextToken;
 
+            if ($request->header('X-Platform') === 'web') {
+                return $this->successResponse([], 'تم تسجيل الدخول بنجاح');
+            }
+
+            $token = $user->createToken('auth_token')->plainTextToken;
             return $this->successResponse(
                 [
                     'token' => $token
@@ -232,8 +236,13 @@ class AuthController extends Controller
     public function logout(Request $request)
     {
         try {
-            $request->user()->currentAccessToken()->delete();
-
+            if ($request->header('X-Platform') === 'web') {
+                Auth::guard('web')->logout();
+                $request->session()->invalidate();
+                $request->session()->regenerateToken();
+            } else {
+                $request->user()?->currentAccessToken()?->delete();
+            }
             return $this->successResponse([], 'تم تسجيل الخروج بنجاح');
         } catch (\Exception $e) {
             return $this->errorResponse([],'فشل في تسجيل الخروج', 500);

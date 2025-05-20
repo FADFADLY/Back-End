@@ -9,6 +9,8 @@ use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\ImageColumn;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -18,6 +20,9 @@ class UserResource extends Resource
     protected static ?string $model = User::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-users';
+    protected static ?string $navigationLabel = 'المستخدمين';
+    protected static ?string $pluralModelLabel = 'المستخدمين';
+    protected static ?string $modelLabel = 'مستخدم';
 
     public static function form(Form $form): Form
     {
@@ -31,13 +36,18 @@ class UserResource extends Resource
     {
         return $table
             ->columns([
-                //
+                ImageColumn::make('avatar')->label('الصورة')->circular(),
+                TextColumn::make('name')->label('الاسم')->searchable(),
+                TextColumn::make('username')->label('اسم المستخدم')->searchable(),
+                TextColumn::make('email')->label('البريد الإلكتروني'),
+                TextColumn::make('gender')->label('النوع'),
+                TextColumn::make('age')->label('العمر'),
             ])
             ->filters([
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\ViewAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -57,8 +67,13 @@ class UserResource extends Resource
     {
         return [
             'index' => Pages\ListUsers::route('/'),
-            'create' => Pages\CreateUser::route('/create'),
-            'edit' => Pages\EditUser::route('/{record}/edit'),
+            'view' => Pages\ViewUser::route('/{record}'),
         ];
     }
+
+    public static function canCreate(): bool
+    {
+        return false;
+    }
+
 }

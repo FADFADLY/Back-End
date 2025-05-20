@@ -17,7 +17,10 @@ class PostResource extends Resource
 {
     protected static ?string $model = Post::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-document-text';
+    protected static ?string $navigationLabel = 'المنشورات';
+    protected static ?string $pluralModelLabel = 'المنشورات';
+    protected static ?string $modelLabel = 'منشور';
 
     public static function form(Form $form): Form
     {
@@ -31,7 +34,9 @@ class PostResource extends Resource
     {
         return $table
             ->columns([
-                //
+                Tables\Columns\TextColumn::make('user.username')->label('اسم المستخدم'),
+                Tables\Columns\TextColumn::make('content')->label('المحتوى'),
+                Tables\Columns\TextColumn::make('created_at')->label('تاريخ الإنشاء')->dateTime(),
             ])
             ->filters([
                 //

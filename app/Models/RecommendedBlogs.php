@@ -4,16 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class HabitsScore extends Model
+class RecommendedBlogs extends Model
 {
-    protected $fillable = [
-        'user_id',
-        'score',
-        'habits',
-    ];
+    protected $fillable = ['user_id', 'recommendations'];
 
     protected $casts = [
-        'habits' => 'array',
+        'recommendations' => 'array',
     ];
 
     public function user()

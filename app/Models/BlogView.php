@@ -4,17 +4,17 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class HabitsScore extends Model
+class BlogView extends Model
 {
     protected $fillable = [
+        'blog_id',
         'user_id',
-        'score',
-        'habits',
     ];
 
-    protected $casts = [
-        'habits' => 'array',
-    ];
+    public function blog()
+    {
+        return $this->belongsTo(Blog::class);
+    }
 
     public function user()
     {

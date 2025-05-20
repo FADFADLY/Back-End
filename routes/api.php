@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\HabitController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BlogController;
@@ -44,6 +45,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('reactions', ReactionController::class);
 
     Route::apiResource('blogs', BlogController::class);
+    Route::get('blogs/{id}/read', [BlogController::class, 'readBlog']);
 
     Route::apiResource('tests', TestController::class);
 
@@ -53,13 +55,15 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/', 'viewProfile');
         Route::put('/name', 'updateName');
         Route::put('/email', 'updateEmail');
-        Route::put('/avatar', 'updateAvatar');
+        Route::post('/avatar', 'updateAvatar');
         Route::put('/bio', 'updateBio');
 
         Route::get('/posts', 'userPosts');
     });
 
     Route::apiResource('books', BookController::class)->only(['index', 'show']);
+
+    Route::apiresource('habits', HabitController::class)->only(['index', 'store']);
 
     Route::controller(TimerController::class)->prefix('timers')->group(function () {
         Route::post('start', 'startOrResume');

@@ -14,6 +14,7 @@ class MoodEntry extends Model
         'user_id',
         'entry_date',
         'mood',
+        'model_prediction',
         'feeling',
         'notes',
     ];

@@ -18,6 +18,9 @@ class PodCastResource extends Resource
     protected static ?string $model = PodCast::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-microphone';
+    protected static ?string $navigationLabel = 'البودكاست';
+    protected static ?string $label = 'بودكاست';
+    protected static ?string $pluralLabel = 'البودكاست';
 
     public static function form(Form $form): Form
     {

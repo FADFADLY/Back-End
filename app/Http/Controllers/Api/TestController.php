@@ -43,19 +43,6 @@ class TestController extends Controller
         return $this->successResponse($test, 'تم جلب بيانات الاختبار والأسئلة بنجاح', 200);
     }
 
-//    public function getQuestions($testId)
-//    {
-//        $question = Question::where('test_id', $testId)
-//            ->select('id', 'question', 'test_id')
-//            ->with('answers:id,answer,question_id')
-//            ->get(['id', 'question', 'test_id']);
-//
-//        if ($question->isEmpty()) {
-//            return $this->errorResponse([],'لا توجد أسئلة لهذا الاختبار', 404);
-//        }
-//        return $this->successResponse($question, 'تم جلب الأسئلة بنجاح', 200);
-//    }
-
     public function calculateScore($testId, Request $request)
     {
         $test = Test::with('questions.answers')->findOrFail($testId);

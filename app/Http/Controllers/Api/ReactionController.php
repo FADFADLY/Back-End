@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Blog;
 use App\Models\Comment;
 use App\Models\Post;
 use App\Models\Reaction;
@@ -18,7 +19,7 @@ class ReactionController extends Controller
         try {
             $validated = $request->validate([
                 'id' => 'required|integer',
-                'type' => 'required|string|in:post,comment',
+                'type' => 'required|string|in:post,comment,blog',
             ],[
                 'id.required' => 'reactable_id is required',
                 'type.required' => 'reactable_type is required',
@@ -33,10 +34,14 @@ class ReactionController extends Controller
         }
 
         $reactionType = null;
+        $blog = null;
         if ($validated['type'] === 'post') {
             $reactionType = Post::class;
         } elseif ($validated['type'] === 'comment') {
             $reactionType = Comment::class;
+        }
+        elseif ($validated['type'] === 'blog') {
+            $reactionType = Blog::class;
         }
         $existingReaction = Reaction::where('user_id', auth()->user()->id)
             ->where('reactable_id', $validated['id'])

@@ -7,12 +7,15 @@ use App\Models\MoodEntry;
 use App\Traits\ApiResponse;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 
 class MoodEntryController extends Controller
 {
     use ApiResponse;
     public function store(Request $request)
     {
+        ini_set('max_execution_time', '1000');
+
         try {
             $validated = $request->validate([
                 'mood'    => 'required|in:happy,neutral,sad,angry,crying',
@@ -32,11 +35,39 @@ class MoodEntryController extends Controller
                 'notes',
             ], 'خطأ في البيانات المدخلة');
         }
+        try {
+            $initialResponse = Http::timeout(1000)->post('https://bedourfouad-arabic-sentiment-demo.hf.space/gradio_api/call/generate_sentiment_label', [
+                'data' => [$request->feeling]
+            ]);
+
+            $eventId = $initialResponse->json()['event_id'] ?? null;
+
+            if (!$eventId) {
+                return $this->errorResponse([], 'فشل في تحليل الشعور عبر الموديل', 500);
+            }
+            $resultResponse = Http::timeout(1000)->get("https://bedourfouad-arabic-sentiment-demo.hf.space/gradio_api/call/generate_sentiment_label/{$eventId}");
+            if (!$resultResponse->ok()) {
+                return $this->errorResponse([], 'فشل في الحصول على نتيجة التحليل', 500);
+            }
+            preg_match('/data:\s*(\[.*\])/', $resultResponse->body(), $matches);
+
+            if (isset($matches[1])) {
+                $decoded = json_decode($matches[1], true);
+                $modelPrediction = $decoded[0] ?? null;
+            } else {
+                $modelPrediction = null;
+            }
+
+        } catch (\Exception $e) {
+            $modelPrediction = null;
+        }
+
 
         $moodEntry = MoodEntry::create([
             'user_id'    => auth()->id(),
             'entry_date' => now()->toDateString(),
             'mood'       => $validated['mood'],
+            'model_prediction' => $modelPrediction,
             'feeling'    => $validated['feeling'],
             'notes'      => $validated['notes'],
         ]);
@@ -57,7 +88,7 @@ class MoodEntryController extends Controller
     public function index(Request $request)
     {
         $query = MoodEntry::select('id', 'entry_date', 'mood', 'feeling', 'notes')
-            ->where('user_id', auth()->id());
+            ->where('user_id', auth()->id())->latest();
 
         if ($request->has('month')) {
             $month = (int) $request->input('month');
@@ -80,7 +111,7 @@ class MoodEntryController extends Controller
         $moodEntries = $query->get();
 
         $moodEntries->map(function ($entry) {
-            $entry->day_of_week = Carbon::parse($entry->entry_date)->format('D'); // مثلاً "Monday"
+            $entry->day_of_week = Carbon::parse($entry->entry_date)->format('l'); // مثلاً "Monday"
             return $entry;
         });
 
@@ -98,7 +129,7 @@ class MoodEntryController extends Controller
     public function show($id)
     {
 
-        $moodEntry = MoodEntry::find($id)->select('id', 'entry_date', 'mood', 'feeling', 'notes')->first();
+        $moodEntry = MoodEntry::select('id', 'entry_date', 'mood', 'feeling', 'notes')->find($id);
 
         if (!$moodEntry) {
             return $this->errorResponse([],'الحالة المزاجية غير موجودة', 404);

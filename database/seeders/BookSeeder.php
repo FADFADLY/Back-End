@@ -22,8 +22,7 @@ class BookSeeder extends Seeder
                 'publication_date' => '2018-01-01',
                 'publisher' => 'دار التنوير للطباعة والنشر والتوزيع',
                 'pages_count' => 328,
-                'image_url' => asset('images/books/1.jpeg'),
-
+                'image_url' => 'books_covers/1.jpeg',
             ],
             [
                 'title' => 'لا تحزن',
@@ -33,8 +32,7 @@ class BookSeeder extends Seeder
                 'publication_date' => '2016-01-01',
                 'publisher' => 'العبيكان للنشر',
                 'pages_count' => 928,
-                'image_url' => asset('images/books/2.jpeg'),
-
+                'image_url' => 'books_covers/2.jpeg',
             ],
             [
                 'title' => 'العقل الباطن',
@@ -44,8 +42,7 @@ class BookSeeder extends Seeder
                 'publication_date' => '2012-01-01',
                 'publisher' => 'مؤسسة هنداوي للتعليم والثقافة',
                 'pages_count' => 175,
-                'image_url' => asset('images/books/3.jpeg'),
-
+                'image_url' => 'books_covers/3.jpeg',
             ],
             [
                 'title' => 'كيفما فكرت فكر العكس',
@@ -55,7 +52,7 @@ class BookSeeder extends Seeder
                 'publication_date' => '2012-01-01',
                 'publisher' => 'دار الساقي للطباعة والنشر',
                 'pages_count' => 113,
-                'image_url' => asset('images/books/4.jpeg'),
+                'image_url' => 'books_covers/4.jpeg',
 
             ],
             [
@@ -66,7 +63,7 @@ class BookSeeder extends Seeder
                 'publication_date' => '2021-01-01',
                 'publisher' => 'عصير الكتب للنشر والتوزيع',
                 'pages_count' => 288,
-                'image_url' => asset('images/books/5.jpeg'),
+                'image_url' => 'books_covers/5.jpeg',
 
             ],
             [
@@ -77,7 +74,7 @@ class BookSeeder extends Seeder
                 'publication_date' => '2021-01-01',
                 'publisher' => 'دار ملهمون للنشر والتوزيع',
                 'pages_count' => 473,
-                'image_url' => asset('images/books/6.jpeg'),
+                'image_url' => 'books_covers/6.jpeg',
 
             ],
             [
@@ -88,7 +85,7 @@ class BookSeeder extends Seeder
                 'pages' => 233,
                 'published_year' => 2019,
                 'description' => 'كن أكثر تنظيماً بقليل، تكن حياتك أسهل بكثير. سواء كنت والداً، أو طالباً، أو حتى مديراً تنفيذياً في شركة، ستكون إدارة الأمور أكثر سهولة عندما تكون منظّماً. يساعدك هذا الكتاب في تحديد أسلوبك التنظيمي بخطوات بسيطة يمكنك القيام بها لمعالجة الفوضى في مجالات حياتك كافة. تُظهر لك هارييت جريفي كيف يمكن لاتباع روتينٍ وعاداتٍ بسيطة أن يصنع كل الفرق. كتاب مليءٌ بالحلول العملية والنصائح والأفكار الملهمة لتقليل الفوضى والتوتر، ما يترك لك مساحة أكبر من المكان والزمان لتستمع بالحياة',
-                'image_url' => asset('images/books/7.jpeg'),
+                'image_url' => 'books_covers/7.jpeg',
             ],
             [
                 'title' => 'كيف أنظم حياتي',
@@ -98,7 +95,7 @@ class BookSeeder extends Seeder
                 'pages' => 169,
                 'published_year' => 2020,
                 'description' => 'كن أكثر تنظيماً بقليل، تكن حياتك أسهل بكثير. سواء كنت والداً، أو طالباً، أو حتى مديراً تنفيذياً في شركة...',
-                'image_url' => asset('images/books/8.jpeg'),
+                'image_url' => 'books_covers/8.jpeg',
 
             ],
             [
@@ -109,7 +106,7 @@ class BookSeeder extends Seeder
                 'pages' => 194,
                 'published_year' => 2025,
                 'description' => 'أشعر بك وما يؤرقك من مشاعر مختلطة ما بين التعب، الحزن، الإحباط، وما بين الحمد والرضا.. أحب أن أخبرك أن هذا طبيعي لأنك إنسان،تعيش حياة مليئة بالمصاعب والتحديات والمهمات اليومية، وبكثيرٍ من الأدوار التي تلعبها كل يوم، والمسؤوليات التي تؤديها. أنا مثلك في هذه الدائرة التي أسير داخلها أحيانًا بلا توقف وكأنني فى حلقة سباق ولا أرى خط النهاية، ولكني مررت بتجربة شخصية منذ عدة سنوات كانت بمنزلة نقطة تحول جذرية في حياتي وطريقة تفكيري؛جعلتني أعيد تصميم حياتي من جديد، وليس أي حياة، هي الحياة التي أحب أن أعيشها من جديد لتجعلني أزهر على مراد الله عز وجل، لذا أحببت أن يكون عنوان هذا الكتاب {فَلَنُحْيِيَنَّهُ حَيَاةً طَيِّبَةً}.',
-                'image_url' => ('images/books/9.jpeg'),
+                'image_url' => 'books_covers/9.jpeg',
 
             ],
         ];

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Resources\BookResource;
 use App\Models\Book;
 use App\Http\Controllers\Controller;
 use App\Traits\ApiResponse;
@@ -14,8 +15,12 @@ class BookController extends Controller
     {
         $books = Book::all();
 
+        if ($books->isEmpty()) {
+            return $this->errorResponse([], 'لا توجد كتب متاحة', 404);
+        }
+
         return $this->successResponse(
-            $books,
+            BookResource::collection($books),
             'تم جلب قائمة الكتب بنجاح',
             200
         );
@@ -30,7 +35,7 @@ class BookController extends Controller
         }
 
         return $this->successResponse(
-            $book,
+            new BookResource($book),
             'تم جلب بيانات الكتاب بنجاح',
             200
         );

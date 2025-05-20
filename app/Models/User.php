@@ -70,4 +70,25 @@ class User extends Authenticatable
     {
         return $this->hasMany(Notification::class);
     }
+
+    public function moodEntries()
+    {
+        return $this->hasMany(MoodEntry::class);
+    }
+
+    public function habitsScore()
+    {
+        return $this->hasOne(HabitsScore::class);
+    }
+
+    public function viewedBlogs()
+    {
+        return $this->belongsToMany(Blog::class, 'blog_views')->withTimestamps();
+    }
+
+    public function recommendedBlogs()
+    {
+        return $this->hasOne(RecommendedBlogs::class);
+    }
+
 }

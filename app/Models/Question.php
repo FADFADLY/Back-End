@@ -17,4 +17,9 @@ class Question extends Model
     {
         return $this->hasMany(Answer::class);
     }
+
+    protected $casts = [
+        'id' => 'integer',
+        'test_id' => 'integer',
+    ];
 }

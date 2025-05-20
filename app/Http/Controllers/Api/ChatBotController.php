@@ -13,14 +13,16 @@ class ChatBotController extends Controller
     use ApiResponse;
     public function sendToChatbot(Request $request)
     {
+        ini_set('max_execution_time', '1000');
+
         $request->validate([
             'prompt' => 'required|string',
         ]);
 
-        $response = Http::withHeaders([
+        $response = Http::timeout(1000)->withHeaders([
             'accept' => 'application/json',
             'Content-Type' => 'application/json',
-        ])->post('https://ahmedelsherbeny-fadfadly-demo.hf.space/generate', [
+        ])->post('https://ahmedelsherbeny-fadfadly-v3.hf.space/generate', [
             'prompt' => $request->prompt,
         ]);
 
@@ -28,11 +30,10 @@ class ChatBotController extends Controller
             ChatBotMessage::create([
                 'user_id' => auth()->id(),
                 'prompt' => $request->prompt,
-                'response' => $response,
+                'response' => $response->json()['response'],
             ]);
-            return $this->successResponse([
-                'response' => $response->json(),
-            ], 'تم إرسال الرسالة بنجاح');
+            return $this->successResponse($response->json()
+            , 'تم إرسال الرسالة بنجاح');
         } else {
             return $this->errorResponse([], 'خطأ في إرسال الرسالة', 500);
         }

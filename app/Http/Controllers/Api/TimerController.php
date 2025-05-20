@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\Api;
 
 use App\Models\Timer;
+use App\Traits\ApiResponse;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 class TimerController extends Controller
 {
+    use ApiResponse;
     public function startOrResume(Request $request)
     {
         $timer = Timer::firstOrCreate(
@@ -19,16 +21,15 @@ class TimerController extends Controller
         );
 
         if ($timer->status === 'running') {
-            return response()->json(['message' => 'Timer is already running.']);
+            return $this->errorResponse([],'تم تشغيل المؤقت بالفعل.');
         }
 
         $timer->update(['status' => 'running']);
         $timer->sessions()->create(['started_at' => now()]);
 
-        return response()->json([
-            'message' => 'Timer started/resumed.',
-            'timer_id' => $timer->id
-        ]);
+        return $this->successResponse([
+            'timer_id' => $timer->id,
+        ], 'تم تشغيل المؤقت بنجاح.');
     }
 
     public function pause($id)
@@ -36,7 +37,7 @@ class TimerController extends Controller
         $timer = Timer::findOrFail($id);
 
         if ($timer->status === 'paused') {
-            return response()->json(['message' => 'Timer is already paused.']);
+            return $this->errorResponse([],'المؤقت متوقف بالفعل.');
         }
 
         $session = $timer->sessions()->latest()->first();
@@ -54,7 +55,8 @@ class TimerController extends Controller
 
         $timer->update(['status' => 'paused']);
 
-        return response()->json(['message' => 'Timer paused.']);
+        return $this->successResponse([], 'تم إيقاف المؤقت بنجاح.');
+
     }
 
     public function stop($id)
@@ -76,7 +78,8 @@ class TimerController extends Controller
 
         $timer->update(['status' => 'stopped']);
 
-        return response()->json(['message' => 'Timer stopped.']);
+        return $this->successResponse([], 'تم إيقاف المؤقت بنجاح.');
+
     }
 
     public function duration($id)
@@ -85,9 +88,9 @@ class TimerController extends Controller
 
         $totalSeconds = $timer->sessions->sum('duration_seconds');
 
-        return response()->json([
-            'message' => 'Total duration fetched successfully.',
-            'duration_seconds' => $totalSeconds
-        ]);
+       return $this->successResponse([
+            'total_seconds' => $totalSeconds,
+            'formatted_duration' => gmdate('H:i:s', $totalSeconds),
+        ], 'تم استرجاع مدة المؤقت بنجاح.');
     }
 }

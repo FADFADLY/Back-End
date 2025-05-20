@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -14,15 +15,38 @@ class BlogResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+       if(!str_contains($this->image, 'http')) {
+            $this->image = asset('/storage/' . $this->image);
+        }
+
+        $converted = strtr($this->publish_date, [
+            'يناير' => 'January', 'فبراير' => 'February', 'مارس' => 'March',
+            'أبريل' => 'April', 'مايو' => 'May', 'يونيو' => 'June',
+            'يوليو' => 'July', 'أغسطس' => 'August', 'سبتمبر' => 'September',
+            'أكتوبر' => 'October', 'نوفمبر' => 'November', 'ديسمبر' => 'December',
+        ]);
+
+        $publish_date = Carbon::createFromFormat('d F Y', $converted);
+
+
         return [
             'id' => $this->id,
             'title' => $this->title,
             'author' => $this->author,
-            'image' => $this->image ? asset('/storage/' . $this->image) : null,
-            'created_at' => $this->created_at->format('dMY'),
-            'views_count' => $this->views_count,
-            'likes_count' => $this->likes_count,
-            'share_count' => $this->share_count,
+            'image' => $this->image ?? null,
+            'created_at' => $publish_date->format('dMY'),
+            'views' =>(int) $this->views_count,
+            'likes' => $this->reactions()->count(),
+            'share' =>(int) $this->share_count,
+
+            $this->mergeWhen(
+                $request->routeIs('blogs.index'),
+                [
+                    'summary' => collect(explode("\n", $this->body))
+                        ->take(3)
+                        ->implode("\n"),
+                ]
+            ),
 
             $this->mergeWhen(
                 $request->routeIs('blogs.show'),
