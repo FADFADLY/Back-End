@@ -5,6 +5,7 @@ namespace App\Http\Resources;
 use App\Enums\AttachmentTypeEnum;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Auth;
 
 class PostResource extends JsonResource
 {
@@ -36,6 +37,8 @@ class PostResource extends JsonResource
             'user_name' => $this->user?->username,
             'comments_count' => $this->comments()->count(),
             'reactions_count' => $this->reactions()->count(),
+            'reacted' => $this->reactions()->where('user_id', Auth::id())->exists(),
+
         ];
     }
 }

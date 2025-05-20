@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\Question;
 use App\Models\Test;
+use App\Services\TestResultMessageService;
 use App\Traits\ApiResponse;
 use Illuminate\Http\Request;
 
@@ -52,8 +52,6 @@ class TestController extends Controller
         }
 
         $score = 0;
-        $result = '';
-
         foreach ($test->questions as $question) {
             if ($request->has($question->id)) {
                 $selectedAnswerId = $request->input($question->id);
@@ -65,44 +63,19 @@ class TestController extends Controller
                 }
             }
         }
-        if ($score < 0) {
-            return $this->errorResponse([],'الدرجة غير صحيحة', 400);
-        }
-        if ($testId == 1) {
-            if ($score <= 9) {
-                $result = 'قلق منخفض';
-            } elseif ($score <= 16) {
-                $result = 'قلق بسيط';
-            } elseif ($score <= 25) {
-                $result = 'قلق متوسط';
-            } elseif ($score <= 32) {
-                $result = 'قلق شديد';
-            } else {
-                $result = 'قلق شديد جداً';
-            }
-        } elseif ($testId == 2) {
-            if ($score <= 9) {
-                $result = 'لا يوجد اكتئاب';
-            } elseif ($score <= 16) {
-                $result = 'اكتئاب بسيط';
-            } elseif ($score <= 25) {
-                $result = 'اكتئاب متوسط';
-            } elseif ($score <= 32) {
-                $result = 'اكتئاب شديد';
-            } else {
-                $result = 'اكتئاب شديد جداً';
-            }
-        } elseif ($testId == 3) {
-            if ($score <= 41) {
-                $result = 'طبيعي';
-            } else {
-                $result = 'مرتفع';
-            }
-        }
+        $testId = (int) $testId;
+        $resultData = match ($testId) {
+            1 => TestResultMessageService::getAnxietyResult($score),      // تايلور
+            2 => TestResultMessageService::getDepressionResult($score),   // بيك
+            3 => TestResultMessageService::getSpenceResult($score),       // سبنس
+            default => ['result' => 'غير معروف', 'message' => 'نوع الاختبار غير معروف'],
+        };
 
         return $this->successResponse([
             'score' => $score,
-            'result' => $result,
+            'result' => $resultData['result'],
+            'message' => $resultData['message'],
+            'image' => $resultData['image']
         ], 'تم حساب النتيجة بنجاح', 200);
     }
 }

@@ -8,10 +8,12 @@ class ChatBotMessage extends Model
 {
     protected $table = 'chat_bot_messages';
 
-    protected $fillable = ['user_id', 'prompt', 'response'];
+    protected $fillable = ['chat_id', 'prompt', 'response'];
 
-    public function user()
+
+    public function chat()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(ChatbotChat::class);
     }
+
 }

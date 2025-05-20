@@ -91,4 +91,9 @@ class User extends Authenticatable
         return $this->hasOne(RecommendedBlogs::class);
     }
 
+    public function chats()
+    {
+        return $this->hasMany(ChatbotChat::class);
+    }
+
 }

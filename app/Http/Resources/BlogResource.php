@@ -5,6 +5,7 @@ namespace App\Http\Resources;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Auth;
 
 class BlogResource extends JsonResource
 {
@@ -38,6 +39,8 @@ class BlogResource extends JsonResource
             'views' =>(int) $this->views_count,
             'likes' => $this->reactions()->count(),
             'share' =>(int) $this->share_count,
+            'reacted' => $this->reactions()->where('user_id', Auth::id())->exists(),
+
 
             $this->mergeWhen(
                 $request->routeIs('blogs.index'),

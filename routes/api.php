@@ -72,5 +72,11 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('{id}/duration', 'duration');
     });
 
-    Route::post('/chatbot', [ChatbotController::class, 'sendToChatbot']);
+
+    Route::post('/chatbot/send', [ChatbotController::class, 'sendToChatbot']);
+    Route::get('/chatbot/chats', [ChatbotController::class, 'getChats']);
+    Route::get('/chatbot/chats/{id}', [ChatbotController::class, 'getChatMessages']);
+    Route::delete('/chatbot/chats/{id}', [ChatbotController::class, 'deleteChat']);
+
+
 });
