@@ -13,6 +13,7 @@ use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\ReactionController;
 use App\Http\Controllers\Api\MoodEntryController;
 use App\Http\Controllers\Api\TimerController;
+use App\Http\Controllers\Api\PodcastController;
 
 /*
 |--------------------------------------------------------------------------
@@ -76,6 +77,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/chatbot/chats', [ChatbotController::class, 'getChats']);
     Route::get('/chatbot/chats/{id}', [ChatbotController::class, 'getChatMessages']);
     Route::delete('/chatbot/chats/{id}', [ChatbotController::class, 'deleteChat']);
+
+    Route::get('podcasts', [PodcastController::class, 'index']);
+
 
 
 });

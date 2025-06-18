@@ -35,4 +35,9 @@ return [
         ],
     ],
 
+    'listennotes' => [
+        'key' => env('LISTEN_NOTES_API_KEY'),
+    ],
+
+
 ];
