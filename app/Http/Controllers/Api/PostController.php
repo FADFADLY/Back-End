@@ -9,6 +9,7 @@ use App\Jobs\AnalyzeContentJob;
 use App\Models\PollOption;
 use App\Models\Post;
 use App\Models\PostLocation;
+use App\Services\PostAnalysisService;
 use App\Traits\ApiResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
@@ -36,7 +37,7 @@ class PostController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request , PostAnalysisService $analyzer)
     {
         try {
             $validated = $request->validate([
@@ -54,6 +55,11 @@ class PostController extends Controller
             ],'خطأ في البيانات المدخلة');
         }
 
+        $result = $analyzer->analyze($validated['content']);
+
+        if (!$result['success']) {
+            return $this->errorResponse([], $result['message'], 403); // Forbidden لو محتوى غير لائق
+        }
 
 
         $typeEnum = AttachmentTypeEnum::fromLabel($validated['type'] ?? 'text');
@@ -101,12 +107,7 @@ class PostController extends Controller
             $post->update(['attachment' => $path]);
         }
 
-        AnalyzeContentJob::dispatch(
-            $post,
-            'https://ayaibrahem12-arabic-sentiment-v2.hf.space/gradio_api/call/predict'
-        );
-
-        return $this->successResponse([], 'جاري تحليل المحتوى', 201);
+        return $this->successResponse([], 'تم انشاء المنشور بنجاح', 201);
     }
 
     public function show(Post $post)
@@ -135,7 +136,7 @@ class PostController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Post $post)
+    public function update(Request $request, Post $post, PostAnalysisService $analyzer)
     {
         try {
             $validated = $request->validate([
@@ -150,6 +151,12 @@ class PostController extends Controller
             ], 'فشل في تحديث المنشور');
         }
 
+        $result = $analyzer->analyze($validated['content']);
+
+        if (!$result['success']) {
+            return $this->errorResponse([], $result['message'], 403); // Forbidden لو محتوى غير لائق
+        }
+
         if(!$post) {
             return $this->errorResponse([],'حدث خطأ اثناء تحديث المنشور', 500);
         }
@@ -158,9 +165,8 @@ class PostController extends Controller
             'content'  => $validated['content'],
         ]);
 
-        AnalyzeContentJob::dispatch($post, 'https://ayaibrahem12-arabic-sentiment-v2.hf.space/gradio_api/call/predict');
-
-        return $this->successResponse([], 'جاري تحليل المحتوى', 201);    }
+        return $this->successResponse([], 'تم تحديث المنشور بنجاح', 201);
+    }
 
     /**
      * Remove the specified resource from storage.

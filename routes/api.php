@@ -45,7 +45,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('reactions', ReactionController::class);
 
     Route::apiResource('blogs', BlogController::class);
-    Route::get('blogs/{id}/read', [BlogController::class, 'readBlog']);
 
     Route::apiResource('tests', TestController::class);
 

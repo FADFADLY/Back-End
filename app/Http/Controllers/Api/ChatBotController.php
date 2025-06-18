@@ -69,13 +69,23 @@ class ChatBotController extends Controller
                     'title'      => $chat->title,
                     'date_time' => $chat->created_at->format('Y-m-d H:i'),
                 ];
-            });;
+            });
+
+        if ($chats->isEmpty()) {
+            return $this->errorResponse([], 'لا توجد محادثات', 404);
+        }
 
         return $this->successResponse($chats, 'تم استرجاع المحادثات بنجاح');
     }
 
     public function getChatMessages($chatId)
     {
+        $chat = ChatbotChat::find($chatId);
+
+        if (!$chat) {
+            return $this->errorResponse([], 'المحادثة غير موجودة', 404);
+        }
+
         $messages = ChatBotMessage::where('chat_id', $chatId)
             ->get()
             ->map(function ($message) {
@@ -85,6 +95,10 @@ class ChatBotController extends Controller
                     'date_time' => $message->created_at->format('Y-m-d H:i'),
                 ];
             });
+
+        if ($messages->isEmpty()) {
+            return $this->errorResponse([], 'لا توجد رسائل في هذه المحادثة', 404);
+        }
 
         return $this->successResponse($messages, 'تم استرجاع الرسائل بنجاح');
     }

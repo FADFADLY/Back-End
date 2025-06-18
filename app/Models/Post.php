@@ -15,6 +15,7 @@ class Post extends Model
     ];
 
     protected $casts = [
+        'id' => 'integer',
         'attachment' => 'array',
         'type' => 'string',
     ];

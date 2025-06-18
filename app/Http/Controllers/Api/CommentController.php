@@ -116,10 +116,6 @@ class CommentController extends Controller
             ],'خطأ في البيانات المدخلة');
         }
 
-        if ($comment->user_id !== auth()->user()->id) {
-            return $this->errorResponse([],'لا يمكنك تعديل هذا التعليق', 403);
-        }
-
         $comment->update([
             'body' => $validated['body'],
         ]);
@@ -136,9 +132,6 @@ class CommentController extends Controller
             return $this->errorResponse([],'التعليق غير موجود', 404);
         }
 
-        if ($comment->user_id !== auth()->user()->id) {
-            return $this->errorResponse([],'لا يمكنك حذف هذا التعليق', 403);
-        }
 
         $comment->delete();
 

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\MoodEntry;
+use App\Services\SentimentAnalysisService;
 use App\Traits\ApiResponse;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -12,7 +13,7 @@ use Illuminate\Support\Facades\Http;
 class MoodEntryController extends Controller
 {
     use ApiResponse;
-    public function store(Request $request)
+    public function store(Request $request, SentimentAnalysisService $service)
     {
         ini_set('max_execution_time', '1000');
 
@@ -35,31 +36,11 @@ class MoodEntryController extends Controller
                 'notes',
             ], 'خطأ في البيانات المدخلة');
         }
-        try {
-            $initialResponse = Http::timeout(1000)->post('https://bedourfouad-arabic-sentiment-demo.hf.space/gradio_api/call/generate_sentiment_label', [
-                'data' => [$request->feeling]
-            ]);
 
-            $eventId = $initialResponse->json()['event_id'] ?? null;
+        $modelPrediction = $service->analyzeFeeling($request->feeling);
 
-            if (!$eventId) {
-                return $this->errorResponse([], 'فشل في تحليل الشعور عبر الموديل', 500);
-            }
-            $resultResponse = Http::timeout(1000)->get("https://bedourfouad-arabic-sentiment-demo.hf.space/gradio_api/call/generate_sentiment_label/{$eventId}");
-            if (!$resultResponse->ok()) {
-                return $this->errorResponse([], 'فشل في الحصول على نتيجة التحليل', 500);
-            }
-            preg_match('/data:\s*(\[.*\])/', $resultResponse->body(), $matches);
-
-            if (isset($matches[1])) {
-                $decoded = json_decode($matches[1], true);
-                $modelPrediction = $decoded[0] ?? null;
-            } else {
-                $modelPrediction = null;
-            }
-
-        } catch (\Exception $e) {
-            $modelPrediction = null;
+        if (!$modelPrediction) {
+            return $this->errorResponse([],'فشل في تحليل الشعور', 500);
         }
 
 
@@ -92,7 +73,7 @@ class MoodEntryController extends Controller
 
         if ($request->has('month')) {
             $month = (int) $request->input('month');
-            $year = (int) $request->input('year', now()->year); // لو السنة مش متبعتش، يستخدم السنة الحالية
+            $year = (int) $request->input('year', now()->year);
 
             $query->whereMonth('entry_date', $month)
                 ->whereYear('entry_date', $year);
@@ -111,7 +92,7 @@ class MoodEntryController extends Controller
         $moodEntries = $query->get();
 
         $moodEntries->map(function ($entry) {
-            $entry->day_of_week = Carbon::parse($entry->entry_date)->format('l'); // مثلاً "Monday"
+            $entry->day_of_week = Carbon::parse($entry->entry_date)->format('l');
             return $entry;
         });
 
