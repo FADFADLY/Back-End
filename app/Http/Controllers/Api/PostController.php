@@ -66,7 +66,7 @@ class PostController extends Controller
 
         $post = Post::create([
             'content' => $validated['content'],
-            'user_id' => 2,
+            'user_id' => auth()->id(),
             'type' => $typeEnum->value,
         ]);
 
