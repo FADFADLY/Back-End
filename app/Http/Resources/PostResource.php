@@ -17,15 +17,25 @@ class PostResource extends JsonResource
     public function toArray(Request $request): array
     {
         $attachment = null;
+
         if ($this->type == AttachmentTypeEnum::POLL->value) {
-          $attachment = $this->pollOptions()->select('id', 'option','votes')->get();
+            $attachment = $this->pollOptions()->select('id', 'option', 'votes')->get();
         }
+
         if ($this->type == AttachmentTypeEnum::LOCATION->value) {
-           $attachment =  $this->location()->select('id', 'latitude', 'longitude','label')->first();
+            $attachment = $this->location()->select('id', 'latitude', 'longitude', 'label')->first();
         }
-        if ($this->type ==AttachmentTypeEnum::IMAGE->value || $this->type == AttachmentTypeEnum::AUDIO->value || $this->type == AttachmentTypeEnum::FILE->value) {
-            $attachment = $this->attachment ?
-                asset('/storage/' . $this->attachment) : null;
+
+        if (in_array($this->type, [
+            AttachmentTypeEnum::IMAGE->value,
+            AttachmentTypeEnum::AUDIO->value,
+            AttachmentTypeEnum::FILE->value
+        ])) {
+            $attachment = $this->attachment ? asset('/storage/' . $this->attachment) : null;
+        }
+
+        if ($this->type == AttachmentTypeEnum::ARTICLE->value) {
+            $attachment = $this->attachment ? json_decode($this->attachment, true) : null;
         }
 
         return [
@@ -38,7 +48,7 @@ class PostResource extends JsonResource
             'comments_count' => $this->comments()->count(),
             'reactions_count' => $this->reactions()->count(),
             'reacted' => $this->reactions()->where('user_id', Auth::id())->exists(),
-
         ];
     }
+
 }

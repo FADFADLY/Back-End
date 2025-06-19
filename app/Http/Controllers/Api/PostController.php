@@ -47,12 +47,12 @@ class PostController extends Controller
             ], [
                 'content.required' => 'المحتوى مطلوب',
             ]);
-        }catch (\Exception $e){
-            return $this->validationErrorResponse($e,[
+        } catch (\Exception $e) {
+            return $this->validationErrorResponse($e, [
                 'content',
                 'attachment',
                 'type'
-            ],'خطأ في البيانات المدخلة');
+            ], 'خطأ في البيانات المدخلة');
         }
 
         $result = $analyzer->analyze($validated['content']);
@@ -61,17 +61,16 @@ class PostController extends Controller
             return $this->errorResponse([], $result['message'], 403); // Forbidden لو محتوى غير لائق
         }
 
-
         $typeEnum = AttachmentTypeEnum::fromLabel($validated['type'] ?? 'text');
 
         $post = Post::create([
             'content' => $validated['content'],
-            'user_id' => auth()->id(),
+            'user_id' => 2,
             'type' => $typeEnum->value,
         ]);
 
         if (!$post) {
-            return $this->errorResponse([],'حدث خطأ اثناء انشاء المنشور', 500);
+            return $this->errorResponse([], 'حدث خطأ اثناء انشاء المنشور', 500);
         }
 
         if ($typeEnum === AttachmentTypeEnum::POLL) {
@@ -89,7 +88,6 @@ class PostController extends Controller
 
         if ($typeEnum === AttachmentTypeEnum::LOCATION) {
             $locationData = json_decode($validated['attachment'], true);
-
             if (is_array($locationData) && isset($locationData['latitude'], $locationData['longitude'])) {
                 PostLocation::create([
                     'post_id' => $post->id,
@@ -98,12 +96,15 @@ class PostController extends Controller
                     'label' => $locationData['label'] ?? null,
                 ]);
                 $post->update(['attachment' => $locationData['label']]);
-
             }
         }
 
+        if ($typeEnum === AttachmentTypeEnum::ARTICLE) {
+            $post->update(['attachment' => $validated['attachment']]);
+        }
+
         if ($request->hasFile('attachment')) {
-            $path = $request->file('attachment')->store('attachments' ,'public');
+            $path = $request->file('attachment')->store('attachments', 'public');
             $post->update(['attachment' => $path]);
         }
 
