@@ -80,8 +80,4 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('podcasts', [PodcastController::class, 'index']);
     Route::get('/podcasts/{id}', [PodcastController::class, 'show']);
     Route::get('/episodes/{id}', [PodcastController::class, 'episode']);
-
-    Route::get('/favorites', [\App\Http\Controllers\Api\FavoritePodcastController::class, 'index']);
-    Route::post('/favorites', [\App\Http\Controllers\Api\FavoritePodcastController::class, 'store']);
-    Route::delete('/favorites/{podcastId}', [\App\Http\Controllers\Api\FavoritePodcastController::class, 'destroy']);
 });
