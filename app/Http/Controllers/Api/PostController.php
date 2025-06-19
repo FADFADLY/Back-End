@@ -2,17 +2,18 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Models\Blog;
+use App\Models\Post;
+use App\Models\PollOption;
+use App\Traits\ApiResponse;
+use App\Models\PostLocation;
+use Illuminate\Http\Request;
+use App\Jobs\AnalyzeContentJob;
 use App\Enums\AttachmentTypeEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\PostResource;
-use App\Jobs\AnalyzeContentJob;
-use App\Models\PollOption;
-use App\Models\Post;
-use App\Models\PostLocation;
-use App\Services\PostAnalysisService;
-use App\Traits\ApiResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use App\Services\PostAnalysisService;
 
 class PostController extends Controller
 {
@@ -27,7 +28,7 @@ class PostController extends Controller
             ->get();
 
         if ($posts->isEmpty()) {
-            return $this->errorResponse([],'لا توجد منشورات', 404);
+            return $this->errorResponse([], 'لا توجد منشورات', 404);
         }
 
 
@@ -37,7 +38,7 @@ class PostController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request , PostAnalysisService $analyzer)
+    public function store(Request $request, PostAnalysisService $analyzer)
     {
         try {
             $validated = $request->validate([
@@ -58,14 +59,14 @@ class PostController extends Controller
         $result = $analyzer->analyze($validated['content']);
 
         if (!$result['success']) {
-            return $this->errorResponse([], $result['message'], 403); // Forbidden لو محتوى غير لائق
+            return $this->errorResponse([], $result['message'], 403);
         }
 
         $typeEnum = AttachmentTypeEnum::fromLabel($validated['type'] ?? 'text');
 
         $post = Post::create([
             'content' => $validated['content'],
-            'user_id' => auth()->id(),
+            'user_id' => 2,
             'type' => $typeEnum->value,
         ]);
 
@@ -100,8 +101,25 @@ class PostController extends Controller
         }
 
         if ($typeEnum === AttachmentTypeEnum::ARTICLE) {
-            $post->update(['attachment' => $validated['attachment']]);
+            if (!empty($validated['attachment'])) {
+                $blogId = (int) $validated['attachment'];
+                $blog = Blog::where('id', $blogId)->first();
+                if ($blog) {
+                    $post->update([
+                        'attachment' => json_encode([
+                            'title' => $blog->title,
+                            'body' => $blog->body,
+                            'image' => $blog->image,
+                            'author' => $blog->author,
+                            'description' => $blog->description,
+                            'publish_date' => $blog->publish_date,
+                        ], JSON_UNESCAPED_UNICODE),
+                    ]);
+                }
+            }
         }
+
+
 
         if ($request->hasFile('attachment')) {
             $path = $request->file('attachment')->store('attachments', 'public');
@@ -117,7 +135,7 @@ class PostController extends Controller
         $post->with('reactions.user:id,name');
 
         if (!$post) {
-            return $this->errorResponse([],'المنشور غير موجود', 404);
+            return $this->errorResponse([], 'المنشور غير موجود', 404);
         }
 
         $reactions = $post->reactions->map(function ($reaction) {
@@ -127,9 +145,9 @@ class PostController extends Controller
             ];
         });
         return $this->successResponse(
-           [
+            [
                 'reactions' => $reactions,
-           ] ,
+            ],
             'تم جلب المنشور بنجاح',
         );
     }
@@ -145,8 +163,7 @@ class PostController extends Controller
             ], [
                 'content.required' => 'المحتوى مطلوب',
             ]);
-        }
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
             return $this->validationErrorResponse($e, [
                 'content',
             ], 'فشل في تحديث المنشور');
@@ -158,8 +175,8 @@ class PostController extends Controller
             return $this->errorResponse([], $result['message'], 403); // Forbidden لو محتوى غير لائق
         }
 
-        if(!$post) {
-            return $this->errorResponse([],'حدث خطأ اثناء تحديث المنشور', 500);
+        if (!$post) {
+            return $this->errorResponse([], 'حدث خطأ اثناء تحديث المنشور', 500);
         }
 
         $post->update([
@@ -175,7 +192,7 @@ class PostController extends Controller
     public function destroy(Post $post)
     {
         if (!$post) {
-            return $this->errorResponse([],'المنشور غير موجود', 404);
+            return $this->errorResponse([], 'المنشور غير موجود', 404);
         }
 
         $post->delete();
