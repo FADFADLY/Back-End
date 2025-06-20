@@ -3,17 +3,16 @@
 namespace App\Http\Controllers\Api;
 
 use App\Models\Blog;
-use App\Models\Post;
-use App\Models\PollOption;
 use App\Traits\ApiResponse;
 use App\Models\PostLocation;
 use Illuminate\Http\Request;
-use App\Jobs\AnalyzeContentJob;
 use App\Enums\AttachmentTypeEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\PostResource;
-use Illuminate\Support\Facades\Http;
 use App\Services\PostAnalysisService;
+use App\Models\PollOption;
+use App\Models\PollVote;
+use App\Models\Post;
 
 class PostController extends Controller
 {
@@ -131,8 +130,7 @@ class PostController extends Controller
 
     public function show(Post $post)
     {
-
-        $post->with('reactions.user:id,name');
+        $post->load(['reactions.user:id,username,avatar', 'pollOptions.pollVotes.user:id,username']);
 
         if (!$post) {
             return $this->errorResponse([], 'المنشور غير موجود', 404);
@@ -144,9 +142,24 @@ class PostController extends Controller
                 'user_avatar' => $reaction->user->avatar,
             ];
         });
+
+        $pollVotes = $post->pollOptions->map(function ($option) {
+            return [
+                'option_id' => $option->id,
+                'option_text' => $option->option,
+                'votes_count' => is_countable($option->votes) ? $option->votes->count() : 0,
+                'voters' => $option->pollVotes->map(function ($vote) {
+                    return [
+                        'user_name' => $vote->user->username,
+                    ];
+                }),
+            ];
+        });
+
         return $this->successResponse(
             [
                 'reactions' => $reactions,
+                'poll_votes' => $pollVotes,
             ],
             'تم جلب المنشور بنجاح',
         );
@@ -198,5 +211,33 @@ class PostController extends Controller
         $post->delete();
 
         return $this->successResponse([], 'تم حذف المنشور بنجاح', 200);
+    }
+
+    public function vote(Request $request, Post $post)
+    {
+        $validated = $request->validate([
+            'option_id' => 'required|exists:poll_options,id',
+        ]);
+
+        $option = PollOption::findOrFail($validated['option_id']);
+
+        if ($option->post_id !== $post->id) {
+            return $this->errorResponse([], 'الخيار لا ينتمي لهذا البوست', 403);
+        }
+
+        $alreadyVoted = PollVote::where('user_id', auth()->id())
+            ->whereIn('poll_option_id', $post->pollOptions->pluck('id'))
+            ->exists();
+
+        if ($alreadyVoted) {
+            return $this->errorResponse([], 'لقد قمت بالتصويت بالفعل على هذا الاستطلاع', 422);
+        }
+
+        PollVote::create([
+            'user_id' => auth()->id(),
+            'poll_option_id' => $validated['option_id'],
+        ]);
+
+        return $this->successResponse([], 'تم تسجيل تصويتك بنجاح');
     }
 }

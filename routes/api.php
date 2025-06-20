@@ -38,6 +38,7 @@ Route::controller(AuthController::class)->group(function () {
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('posts', PostController::class);
+    Route::post('posts/{post}/vote', [PostController::class, 'vote']);
 
     Route::apiResource('posts.comments', CommentController::class)->shallow();
 

@@ -48,7 +48,16 @@ class PostResource extends JsonResource
             'comments_count' => $this->comments()->count(),
             'reactions_count' => $this->reactions()->count(),
             'reacted' => $this->reactions()->where('user_id', Auth::id())->exists(),
+            'poll_results' => $this->when($this->type === 'poll', function () {
+                return $this->pollOptions->map(function ($option) {
+                    return [
+                        'id' => $option->id,
+                        'option' => $option->option,
+                        'votes_count' => $option->votes->count(),
+                    ];
+                });
+            }),
+
         ];
     }
-
 }
