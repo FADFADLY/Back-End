@@ -17,34 +17,35 @@ class ProfileController extends Controller
         $user = auth()->user();
 
         if (!$user) {
-            return $this->errorResponse([],'خطأ في عرض البيانات', 404);
+            return $this->errorResponse([], 'خطأ في عرض البيانات', 404);
         }
         return $this->successResponse(new ProfileResource($user), 'تم عرض البيانات بنجاح');
-
     }
 
     public function updateAvatar(Request $request)
     {
 
-       try{
-           $request->validate([
-               'avatar' => 'required||mimes:jpeg,png,jpg|max:2048',
-           ],
-               [
-                   'avatar.required' => 'الصورة مطلوبة',
-                   'avatar.mimes' => 'يجب أن تكون الصورة من نوع jpeg, png, jpg',
-                   'avatar.max' => 'حجم الصورة يجب أن يكون أقل من 2 ميجابايت',
-               ]);
-       }catch (\Exception $e){
-           return $this->validationErrorResponse($e,['avatar']);
-           }
+        try {
+            $request->validate(
+                [
+                    'avatar' => 'required||mimes:jpeg,png,jpg|max:2048',
+                ],
+                [
+                    'avatar.required' => 'الصورة مطلوبة',
+                    'avatar.mimes' => 'يجب أن تكون الصورة من نوع jpeg, png, jpg',
+                    'avatar.max' => 'حجم الصورة يجب أن يكون أقل من 2 ميجابايت',
+                ]
+            );
+        } catch (\Exception $e) {
+            return $this->validationErrorResponse($e, ['avatar']);
+        }
 
         $avatarPath = $request->file('avatar')->store('avatars', 'public');
 
         $user = auth()->user();
 
         if (!$user) {
-            return $this->errorResponse([],'خطأ في عرض البيانات', 404);
+            return $this->errorResponse([], 'خطأ في عرض البيانات', 404);
         }
 
         $user->update(['avatar' => $avatarPath]);
@@ -57,17 +58,19 @@ class ProfileController extends Controller
         $user = auth()->user();
 
         if (!$user) {
-            return $this->errorResponse([],'خطأ في عرض البيانات', 404);
+            return $this->errorResponse([], 'خطأ في عرض البيانات', 404);
         }
-        try{
-            $request->validate([
-                'name' => 'required|string|max:255',
-            ],
+        try {
+            $request->validate(
+                [
+                    'name' => 'required|string|max:255',
+                ],
                 [
                     'name.required' => 'الاسم مطلوب',
-                ]);
-        }catch (\Exception $e){
-            return $this->validationErrorResponse($e,['name']);
+                ]
+            );
+        } catch (\Exception $e) {
+            return $this->validationErrorResponse($e, ['name']);
         }
         $user->update(['name' => $request->name,]);
         return $this->successResponse([], 'تم تحديث البيانات بنجاح');
@@ -78,19 +81,21 @@ class ProfileController extends Controller
         $user = auth()->user();
 
         if (!$user) {
-            return $this->errorResponse([],'خطأ في عرض البيانات', 404);
+            return $this->errorResponse([], 'خطأ في عرض البيانات', 404);
         }
-        try{
-            $request->validate([
-                'email' => 'required|email|unique:users,email,'.$user->id,
-            ],
+        try {
+            $request->validate(
+                [
+                    'email' => 'required|email|unique:users,email,' . $user->id,
+                ],
                 [
                     'email.required' => 'البريد الإلكتروني مطلوب',
                     'email.email' => 'البريد الإلكتروني غير صالح',
                     'email.unique' => 'البريد الإلكتروني مستخدم من قبل',
-                ]);
-        }catch (\Exception $e){
-            return $this->validationErrorResponse($e,['email']);
+                ]
+            );
+        } catch (\Exception $e) {
+            return $this->validationErrorResponse($e, ['email']);
         }
         $user->update(['email' => $request->email,]);
         return $this->successResponse([], 'تم تحديث البيانات بنجاح');
@@ -101,17 +106,19 @@ class ProfileController extends Controller
         $user = auth()->user();
 
         if (!$user) {
-            return $this->errorResponse([],'خطأ في عرض البيانات', 404);
+            return $this->errorResponse([], 'خطأ في عرض البيانات', 404);
         }
-        try{
-            $request->validate([
-                'bio' => 'required|string|max:255',
-            ],
+        try {
+            $request->validate(
+                [
+                    'bio' => 'required|string|max:255',
+                ],
                 [
                     'bio.required' => 'الحالة مطلوبة',
-                ]);
-        }catch (\Exception $e){
-            return $this->validationErrorResponse($e,['bio']);
+                ]
+            );
+        } catch (\Exception $e) {
+            return $this->validationErrorResponse($e, ['bio']);
         }
         $user->update(['bio' => $request->bio,]);
         return $this->successResponse([], 'تم تحديث الحالة بنجاح');
@@ -122,16 +129,12 @@ class ProfileController extends Controller
         $user = auth()->user();
 
         if (!$user) {
-            return $this->errorResponse([],'خطأ في عرض البيانات', 404);
+            return $this->errorResponse([], 'خطأ في عرض البيانات', 404);
         }
         $posts = $user->posts;
         if ($posts->isEmpty()) {
-            return $this->errorResponse([],'لا توجد منشورات', 404);
+            return $this->errorResponse([], 'لا توجد منشورات', 404);
         }
         return $this->successResponse(PostResource::collection($posts), 'تم عرض البيانات بنجاح');
     }
-
-
-
-
 }

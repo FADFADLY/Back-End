@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
-use App\Http\Resources\BlogResource;
 use App\Models\Blog;
 use App\Models\BlogView;
-use App\Services\BlogRecommendationService;
+use App\Models\Reaction;
 use App\Traits\ApiResponse;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Http\Resources\BlogResource;
 use Illuminate\Support\Facades\Auth;
+use App\Services\BlogRecommendationService;
 
 class BlogController extends Controller
 {
@@ -29,12 +30,34 @@ class BlogController extends Controller
         return $this->successResponse(BlogResource::collection($blogs), 'تم جلب المدونات بنجاح');
     }
 
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'body' => 'required|string',
+            'image' => 'nullable|url',
+            'author' => 'nullable|string',
+            'description' => 'nullable|string',
+            'publish_date' => 'nullable|date',
+        ]);
+
+        $blog = Blog::create([
+            'title' => $validated['title'],
+            'body' => $validated['body'],
+            'image' => $validated['image'] ?? null,
+            'author' => $validated['author'] ?? auth()->user()->name,
+            'description' => $validated['description'] ?? null,
+            'publish_date' => $validated['publish_date'] ?? now(),
+            'views_count' => 0,
+            'likes_count' => 0,
+            'share_count' => 0,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'تم إنشاء البلوج بنجاح.',
+            'data' => $blog,
+        ], 201);
     }
 
     /**
@@ -69,21 +92,4 @@ class BlogController extends Controller
 
         return $this->successResponse(new BlogResource($blog), 'تم جلب المدونة بنجاح');
     }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Blog $blog)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Blog $blog)
-    {
-        //
-    }
-
 }

@@ -17,4 +17,9 @@ class PollOption extends Model
     {
         return $this->belongsTo(Post::class);
     }
+
+    public function pollVotes()
+    {
+        return $this->hasMany(PollVote::class);
+    }
 }
