@@ -77,9 +77,14 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/chatbot/chats/{id}', [ChatbotController::class, 'getChatMessages']);
     Route::delete('/chatbot/chats/{id}', [ChatbotController::class, 'deleteChat']);
 
-    Route::get('liked-podcasts', [PodcastController::class, 'likedPodcasts']);
-    Route::get('liked-episodes', [PodcastController::class, 'likedEpisodes']);
-    Route::get('podcasts/{id}', [PodcastController::class, 'show']);
-    Route::get('episodes/{id}', [PodcastController::class, 'episode']);
-    Route::get('podcasts', [PodcastController::class, 'index']);
+    Route::prefix('podcasts')->group(function () {
+        Route::get('/', [PodcastController::class, 'index']);
+        Route::get('liked', [PodcastController::class, 'likedPodcasts']);
+        Route::get('{id}', [PodcastController::class, 'show']);
+    });
+
+    Route::prefix('episodes')->group(function () {
+        Route::get('liked', [PodcastController::class, 'likedEpisodes']);
+        Route::get('{id}', [PodcastController::class, 'episode']);
+    });
 });
