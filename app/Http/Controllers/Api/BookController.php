@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Resources\BookResource;
 use App\Models\Book;
-use App\Http\Controllers\Controller;
+use App\Models\Reaction;
 use App\Traits\ApiResponse;
+use App\Http\Controllers\Controller;
+use App\Http\Resources\BookResource;
 
 class BookController extends Controller
 {
@@ -39,5 +40,16 @@ class BookController extends Controller
             'تم جلب بيانات الكتاب بنجاح',
             200
         );
+    }
+
+    public function likedBooks()
+    {
+        $ids = Reaction::where('user_id', auth()->id())
+            ->where('reactable_type', Book::class)
+            ->pluck('reactable_id');
+
+        $books = Book::whereIn('id', $ids)->get();
+
+        return $this->successResponse($books, 'تم جلب الكتب التي أعجب بها المستخدم');
     }
 }

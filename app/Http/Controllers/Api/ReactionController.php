@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
 use App\Models\Blog;
-use App\Models\Comment;
+use App\Models\Book;
 use App\Models\Post;
+use App\Models\Comment;
 use App\Models\Reaction;
 use App\Traits\ApiResponse;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class ReactionController extends Controller
 {
@@ -19,7 +20,7 @@ class ReactionController extends Controller
         try {
             $validated = $request->validate([
                 'id' => 'required',
-                'type' => 'required|string|in:post,comment,blog,podcast,episode',
+                'type' => 'required|string|in:post,comment,book,blog,podcast,episode',
             ]);
         } catch (\Exception $e) {
             return $this->validationErrorResponse($e, [
@@ -32,6 +33,7 @@ class ReactionController extends Controller
             'post' => Post::class,
             'comment' => Comment::class,
             'blog' => Blog::class,
+            'book' => Book::class,
             'podcast' => 'podcast',   // API ID
             'episode' => 'episode',   // API ID
         };

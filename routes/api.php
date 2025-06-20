@@ -39,6 +39,7 @@ Route::controller(AuthController::class)->group(function () {
 Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('posts', PostController::class);
     Route::post('posts/{post}/vote', [PostController::class, 'vote']);
+    Route::get('liked-posts', [PostController::class, 'likedPosts']);
 
     Route::apiResource('posts.comments', CommentController::class)->shallow();
 
@@ -47,6 +48,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('reactions', ReactionController::class);
 
     Route::apiResource('blogs', BlogController::class);
+    Route::get('liked-blogs', [BlogController::class, 'likedBlogs']);
 
     Route::apiResource('tests', TestController::class);
 
@@ -63,6 +65,7 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     Route::apiResource('books', BookController::class)->only(['index', 'show']);
+    Route::get('liked-books', [BookController::class, 'likedBooks']);
 
     Route::apiresource('habits', HabitController::class)->only(['index', 'store']);
 

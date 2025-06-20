@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
-use App\Http\Resources\BlogResource;
 use App\Models\Blog;
 use App\Models\BlogView;
-use App\Services\BlogRecommendationService;
+use App\Models\Reaction;
 use App\Traits\ApiResponse;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Http\Resources\BlogResource;
 use Illuminate\Support\Facades\Auth;
+use App\Services\BlogRecommendationService;
 
 class BlogController extends Controller
 {
@@ -28,7 +29,6 @@ class BlogController extends Controller
 
         return $this->successResponse(BlogResource::collection($blogs), 'تم جلب المدونات بنجاح');
     }
-
 
     public function store(Request $request)
     {
@@ -59,7 +59,6 @@ class BlogController extends Controller
             'data' => $blog,
         ], 201);
     }
-
 
     /**
      * Display the specified resource.
@@ -94,20 +93,16 @@ class BlogController extends Controller
         return $this->successResponse(new BlogResource($blog), 'تم جلب المدونة بنجاح');
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Blog $blog)
+    public function likedBlogs()
     {
-        //
-    }
+        $blogs = Reaction::where('user_id', auth()->id())
+            ->where('reactable_type', Blog::class)
+            ->with('reactable')
+            ->get()
+            ->pluck('reactable')
+            ->filter();
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Blog $blog)
-    {
-        //
+        return $this->successResponse($blogs, 'تم جلب المقالات التي أعجب بها المستخدم');
     }
 
 }
