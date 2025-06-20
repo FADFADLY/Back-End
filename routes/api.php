@@ -39,16 +39,16 @@ Route::controller(AuthController::class)->group(function () {
 Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('posts', PostController::class);
     Route::post('posts/{post}/vote', [PostController::class, 'vote']);
-    Route::get('liked-posts', [PostController::class, 'likedPosts']);
 
     Route::apiResource('posts.comments', CommentController::class)->shallow();
 
     Route::apiResource('mood-entries', MoodEntryController::class);
 
     Route::apiResource('reactions', ReactionController::class);
+    Route::get('liked-items', [ReactionController::class, 'likedItems']);
+
 
     Route::apiResource('blogs', BlogController::class);
-    Route::get('liked-blogs', [BlogController::class, 'likedBlogs']);
 
     Route::apiResource('tests', TestController::class);
 
@@ -65,7 +65,6 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     Route::apiResource('books', BookController::class)->only(['index', 'show']);
-    Route::get('liked-books', [BookController::class, 'likedBooks']);
 
     Route::apiresource('habits', HabitController::class)->only(['index', 'store']);
 
@@ -83,12 +82,10 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::prefix('podcasts')->group(function () {
         Route::get('/', [PodcastController::class, 'index']);
-        Route::get('liked', [PodcastController::class, 'likedPodcasts']);
         Route::get('{id}', [PodcastController::class, 'show']);
     });
 
     Route::prefix('episodes')->group(function () {
-        Route::get('liked', [PodcastController::class, 'likedEpisodes']);
         Route::get('{id}', [PodcastController::class, 'episode']);
     });
 });

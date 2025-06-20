@@ -92,17 +92,4 @@ class BlogController extends Controller
 
         return $this->successResponse(new BlogResource($blog), 'تم جلب المدونة بنجاح');
     }
-
-    public function likedBlogs()
-    {
-        $blogs = Reaction::where('user_id', auth()->id())
-            ->where('reactable_type', Blog::class)
-            ->with('reactable')
-            ->get()
-            ->pluck('reactable')
-            ->filter();
-
-        return $this->successResponse($blogs, 'تم جلب المقالات التي أعجب بها المستخدم');
-    }
-
 }

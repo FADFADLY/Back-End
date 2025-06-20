@@ -242,15 +242,4 @@ class PostController extends Controller
         return $this->successResponse([], 'تم تسجيل تصويتك بنجاح');
     }
 
-    public function likedPosts()
-    {
-        $posts = Reaction::where('user_id', auth()->id())
-            ->where('reactable_type', Post::class)
-            ->with('reactable') // assuming polymorphic relation named "reactable"
-            ->get()
-            ->pluck('reactable')
-            ->filter(); // remove nulls if any post got deleted
-
-        return $this->successResponse($posts, 'تم جلب المنشورات التي أعجب بها المستخدم');
-    }
 }

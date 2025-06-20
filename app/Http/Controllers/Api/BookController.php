@@ -41,15 +41,4 @@ class BookController extends Controller
             200
         );
     }
-
-    public function likedBooks()
-    {
-        $ids = Reaction::where('user_id', auth()->id())
-            ->where('reactable_type', Book::class)
-            ->pluck('reactable_id');
-
-        $books = Book::whereIn('id', $ids)->get();
-
-        return $this->successResponse($books, 'تم جلب الكتب التي أعجب بها المستخدم');
-    }
 }
