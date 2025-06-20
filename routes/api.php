@@ -46,6 +46,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('mood-entries', MoodEntryController::class);
 
     Route::apiResource('reactions', ReactionController::class);
+    Route::get('liked-items', [ReactionController::class, 'likedItems']);
+
 
     Route::apiResource('blogs', BlogController::class);
 
@@ -59,7 +61,6 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('/email', 'updateEmail');
         Route::post('/avatar', 'updateAvatar');
         Route::put('/bio', 'updateBio');
-
         Route::get('/posts', 'userPosts');
     });
 
@@ -81,12 +82,10 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::prefix('podcasts')->group(function () {
         Route::get('/', [PodcastController::class, 'index']);
-        Route::get('liked', [PodcastController::class, 'likedPodcasts']);
         Route::get('{id}', [PodcastController::class, 'show']);
     });
 
     Route::prefix('episodes')->group(function () {
-        Route::get('liked', [PodcastController::class, 'likedEpisodes']);
         Route::get('{id}', [PodcastController::class, 'episode']);
     });
 
