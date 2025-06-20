@@ -7,6 +7,7 @@ use App\Models\Blog;
 use App\Models\Comment;
 use App\Models\Post;
 use App\Models\Reaction;
+use App\Notifications\NewInteractionNotification;
 use App\Traits\ApiResponse;
 use Illuminate\Http\Request;
 
@@ -62,6 +63,19 @@ class ReactionController extends Controller
             'reactable_id' => $validated['id'],
             'reactable_type' => $reactionType,
         ]);
+
+        if (in_array($validated['type'], ['post', 'comment'])) {
+            $modelInstance = $reactionType::find($validated['id']); // هات الـ object من الـ DB
+
+            if ($modelInstance && $modelInstance->user_id !== auth()->id()) {
+                $modelInstance->user->notify(new NewInteractionNotification(
+                    'reaction',
+                    $modelInstance,
+                    auth()->user()->username . ' تفاعل مع '. ($validated['type'] === 'post' ? 'منشورك' : 'تعليقك') . '.',
+                    auth()->id()
+                ));
+            }
+        }
 
         return $this->successResponse(
             [],

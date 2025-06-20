@@ -32,7 +32,6 @@ return Application::configure(basePath: dirname(__DIR__))
             ], 404);
 
         });
-
         $exceptions->render(function (ModelNotFoundException $e, Request $request) {
             if ($request->is('api/*')) {
                 return response()->json([
@@ -44,7 +43,6 @@ return Application::configure(basePath: dirname(__DIR__))
                 ], 404);
             }
         });
-
         $exceptions->render(function (MethodNotAllowedHttpException $e, Request $request) {
             return response()->json([
                 'success' => false,
@@ -55,7 +53,6 @@ return Application::configure(basePath: dirname(__DIR__))
             ], 405);
 
         });
-
         $exceptions->render(function (ValidationException $e, Request $request) {
             if ($request->is('api/*')) {
                 return response()->json([
@@ -67,7 +64,6 @@ return Application::configure(basePath: dirname(__DIR__))
                 ], 422);
             }
         });
-
         $exceptions->render(function (AuthenticationException $e, Request $request) {
             if ($request->is('api/*')) {
                 return response()->json([
@@ -79,7 +75,6 @@ return Application::configure(basePath: dirname(__DIR__))
                 ], 401);
             }
         });
-
         $exceptions->render(function (Throwable $e, Request $request) {
             if ($request->is('api/*')) {
                 return response()->json([

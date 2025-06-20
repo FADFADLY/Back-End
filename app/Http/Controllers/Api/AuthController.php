@@ -38,7 +38,6 @@ class AuthController extends Controller
             'تم التسجيل بنجاح.',
             201
         );
-
     }
     public function login(Request $request)
     {

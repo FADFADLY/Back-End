@@ -5,8 +5,10 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Comment;
 use App\Models\Post;
+use App\Notifications\NewInteractionNotification;
 use App\Traits\ApiResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CommentController extends Controller
 {
@@ -22,6 +24,8 @@ class CommentController extends Controller
                 'body' => $comment->body,
                 'post_id' => $comment->post_id,
                 'created_at' => $comment->created_at->diffForHumans(),
+                'reactions_count' => $comment->reactions()->count(),
+                'reacted' => $comment->reactions()->where('user_id', Auth::id())->exists(),
                 'user' => [
                     'user' => $comment->user->username,
                     'image' => $comment->user->avatar ? asset('storage/' . $comment->user->avatar) : null,
@@ -66,6 +70,16 @@ class CommentController extends Controller
 
         if(!$comment) {
             return $this->errorResponse([],'حدث خطأ اثناء انشاء التعليق', 500);
+        }
+
+
+        if ($post->user_id !== auth()->id()) {
+            $post->user->notify(new NewInteractionNotification(
+                'comment',
+                $comment,
+                auth()->user()->username . ' علق علي منشورك.',
+                auth()->id()
+            ));
         }
 
         return $this->successResponse([], 'تم انشاء التعليق بنجاح', 201);

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\HabitController;
+use App\Http\Controllers\Api\NotificationController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BlogController;
@@ -38,6 +39,7 @@ Route::controller(AuthController::class)->group(function () {
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('posts', PostController::class);
+    Route::post('posts/{post}/vote', [PostController::class, 'vote']);
 
     Route::apiResource('posts.comments', CommentController::class)->shallow();
 
@@ -72,14 +74,29 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('{id}/duration', 'duration');
     });
 
-
     Route::post('/chatbot/send', [ChatbotController::class, 'sendToChatbot']);
     Route::get('/chatbot/chats', [ChatbotController::class, 'getChats']);
     Route::get('/chatbot/chats/{id}', [ChatbotController::class, 'getChatMessages']);
     Route::delete('/chatbot/chats/{id}', [ChatbotController::class, 'deleteChat']);
 
-    Route::get('podcasts', [PodcastController::class, 'index']);
+    Route::prefix('podcasts')->group(function () {
+        Route::get('/', [PodcastController::class, 'index']);
+        Route::get('liked', [PodcastController::class, 'likedPodcasts']);
+        Route::get('{id}', [PodcastController::class, 'show']);
+    });
 
+    Route::prefix('episodes')->group(function () {
+        Route::get('liked', [PodcastController::class, 'likedEpisodes']);
+        Route::get('{id}', [PodcastController::class, 'episode']);
+    });
+
+
+    Route::controller(NotificationController::class)->prefix('notifications')->group(function () {
+        Route::get('/', 'index');
+        Route::get('/unread', 'unread');
+        Route::post('/{id}/read', 'markAsRead');
+        Route::post('/read-all', 'markAllAsRead');
+    });
 
 
 });

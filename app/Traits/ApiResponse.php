@@ -32,7 +32,6 @@ trait ApiResponse
     {
         $errors = $exception->validator->errors()->toArray();
 
-        // نضيف الحقول اللي مفيهاش أخطاء
         foreach ($allFields as $field) {
             if (!isset($errors[$field])) {
                 $errors[$field] = [];
