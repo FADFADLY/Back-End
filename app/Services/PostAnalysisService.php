@@ -54,8 +54,8 @@ class PostAnalysisService
 
                 if ($fullText && str_contains($fullText, 'negative')) {
                     return [
-                        'success' => true,
-                        'message' => 'تجاوز التحليل مؤقتًا للتجربة',
+                        'success' => false,
+                        'message' => 'المحتوى مرفوض',
                     ];
                 }
 
