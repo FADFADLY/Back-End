@@ -30,12 +30,36 @@ class BlogController extends Controller
     }
 
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'body' => 'required|string',
+            'image' => 'nullable|url',
+            'author' => 'nullable|string',
+            'description' => 'nullable|string',
+            'publish_date' => 'nullable|date',
+        ]);
+
+        $blog = Blog::create([
+            'title' => $validated['title'],
+            'body' => $validated['body'],
+            'image' => $validated['image'] ?? null,
+            'author' => $validated['author'] ?? auth()->user()->name,
+            'description' => $validated['description'] ?? null,
+            'publish_date' => $validated['publish_date'] ?? now(),
+            'views_count' => 0,
+            'likes_count' => 0,
+            'share_count' => 0,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'تم إنشاء البلوج بنجاح.',
+            'data' => $blog,
+        ], 201);
     }
+
 
     /**
      * Display the specified resource.
