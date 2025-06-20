@@ -92,9 +92,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::controller(NotificationController::class)->prefix('notifications')->group(function () {
         Route::get('/', 'index');
-        Route::get('/unread', 'unread');
-        Route::post('/{id}/read', 'markAsRead');
-        Route::post('/read-all', 'markAllAsRead');
+        Route::post('/{id}/read', 'read');
     });
 
 

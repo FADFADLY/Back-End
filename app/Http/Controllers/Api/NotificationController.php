@@ -31,6 +31,7 @@ class NotificationController extends Controller
                             : null,
                     ],
                     'created_at' => $notification->created_at->diffForHumans(),
+                    'is_read' => $notification->read_at ? true : false,
                 ];
             }),
             'تم جلب الاشعارات بنجاح.'
@@ -38,31 +39,18 @@ class NotificationController extends Controller
 
     }
 
-    public function unread(Request $request)
-    {
-        return response()->json([
-            'success' => true,
-            'data' => $request->user()->unreadNotifications()->latest()->get(),
-        ]);
-    }
-
-    public function markAsRead(Request $request, $id)
+    public function read(Request $request, $id)
     {
         $notification = $request->user()->notifications()->find($id);
 
         if (!$notification) {
-            return response()->json(['success' => false, 'message' => 'Notification not found.'], 404);
+            return $this->errorResponse([], 'الاشعار غير موجود', 404);
         }
 
         $notification->markAsRead();
 
-        return response()->json(['success' => true, 'message' => 'Notification marked as read.']);
+        return $this->successResponse([], 'تم قراءة الاشعار بنجاح.');
+
     }
 
-    public function markAllAsRead(Request $request)
-    {
-        $request->user()->unreadNotifications->markAsRead();
-
-        return response()->json(['success' => true, 'message' => 'All notifications marked as read.']);
-    }
 }
