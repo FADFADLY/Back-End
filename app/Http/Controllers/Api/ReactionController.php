@@ -85,30 +85,39 @@ class ReactionController extends Controller
             'type' => 'required|string|in:post,comment,book,blog,podcast,episode',
         ]);
 
+        $type = $validated['type'];
+
         $dbModels = [
+            'post' => [\App\Models\Post::class, \App\Http\Resources\PostResource::class],
+            'blog' => [\App\Models\Blog::class, \App\Http\Resources\BlogResource::class],
+            'book' => [\App\Models\Book::class, \App\Http\Resources\BookResource::class],
+        ];
+
+        $typeMap = [
             'post' => \App\Models\Post::class,
             'comment' => \App\Models\Comment::class,
             'blog' => \App\Models\Blog::class,
             'book' => \App\Models\Book::class,
+            'podcast' => 'podcast',
+            'episode' => 'episode',
         ];
 
-        $type = $validated['type'];
+        $reactableType = $typeMap[$type];
+
+        $ids = Reaction::where('user_id', auth()->id())
+            ->where('reactable_type', $reactableType)
+            ->pluck('reactable_id');
 
         if (array_key_exists($type, $dbModels)) {
-            $model = $dbModels[$type];
-
-            $ids = Reaction::where('user_id', auth()->id())
-                ->where('reactable_type', $model)
-                ->pluck('reactable_id');
+            [$model, $resource] = $dbModels[$type];
 
             $items = $model::whereIn('id', $ids)->get();
 
-            return $this->successResponse($items, 'تم جلب العناصر المعمول لها لايك بنجاح');
+            return $this->successResponse(
+                $resource::collection($items),
+                'تم جلب العناصر المعمول لها لايك بنجاح'
+            );
         }
-
-        $ids = Reaction::where('user_id', auth()->id())
-            ->where('reactable_type', $type)
-            ->pluck('reactable_id');
 
         $items = [];
 
@@ -126,6 +135,13 @@ class ReactionController extends Controller
             }
         }
 
-        return $this->successResponse($items, 'تم جلب العناصر المعمول لها لايك من API بنجاح');
+        $resourceClass = $type === 'podcast'
+            ? \App\Http\Resources\PodcastResource::class
+            : \App\Http\Resources\EpisodeResource::class;
+
+        return $this->successResponse(
+            $resourceClass::collection(collect($items)),
+            'تم جلب العناصر المعمول لها لايك من API بنجاح'
+        );
     }
 }
