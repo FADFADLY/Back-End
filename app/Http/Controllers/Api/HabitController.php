@@ -41,7 +41,11 @@ class HabitController extends Controller
             ];
         });
 
-        return $this->successResponse($habitsWithStatus, 'تم جلب العادات بنجاح');
+        return $this->successResponse([
+            'habits' =>  $habitsWithStatus,
+            'score' => $todayScore ? $todayScore->score : 0,
+            'full_mark' => Habit::count(),
+        ], 'تم جلب العادات بنجاح');
     }
 
 

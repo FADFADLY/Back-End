@@ -120,6 +120,6 @@ class ReactionController extends Controller
             }
         }
 
-        return $this->successResponse($items, 'تم جلب العناصر المعمول لها لايك من API بنجاح');
+        return $this->successResponse($items, 'تم جلب العناصر المعمول لها لايك بنجاح');
     }
 }
