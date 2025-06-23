@@ -3,6 +3,11 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\BlogResource;
+use App\Http\Resources\BookResource;
+use App\Http\Resources\EpisodeResource;
+use App\Http\Resources\PodcastResource;
+use App\Http\Resources\PostResource;
 use App\Models\Blog;
 use App\Models\Book;
 use App\Models\Comment;
@@ -11,6 +16,8 @@ use App\Models\Reaction;
 use App\Traits\ApiResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use App\Notifications\NewInteractionNotification;
+
 
 class ReactionController extends Controller
 {
@@ -46,7 +53,7 @@ class ReactionController extends Controller
 
         if ($existingReaction) {
             $existingReaction->delete();
-            return $this->successResponse([], 'تم حذف التفاعل بنجاح', 200);
+            return $this->successResponse([], 'تم حذف الاعجاب بنجاح', 200);
         }
 
         Reaction::create([
@@ -55,28 +62,20 @@ class ReactionController extends Controller
             'reactable_type' => $reactionType,
         ]);
 
-        return $this->successResponse([], 'تم إضافة التفاعل بنجاح', 201);
-    }
-    public function count(Request $request)
-    {
-        $validated = $request->validate([
-            'id' => 'required',
-            'type' => 'required|string|in:post,comment,blog,podcast,episode',
-        ]);
+        if (in_array($validated['type'], ['post', 'comment'])) {
+            $modelInstance = $reactionType::find($validated['id']);
 
-        $reactionType = match ($validated['type']) {
-            'post' => Post::class,
-            'comment' => Comment::class,
-            'blog' => Blog::class,
-            'podcast' => 'podcast',   // API ID
-            'episode' => 'episode',   // API ID
-        };
+            if ($modelInstance && $modelInstance->user_id !== auth()->id()) {
+                $modelInstance->user->notify(new NewInteractionNotification(
+                    'reaction',
+                    $modelInstance,
+                    auth()->user()->username . ' تفاعل مع ' . ($validated['type'] === 'post' ? 'منشورك' : 'تعليقك'),
+                    auth()->id()
+                ));
+            }
+        }
 
-        $count = Reaction::where('reactable_id', $validated['id'])
-            ->where('reactable_type', $reactionType)
-            ->count();
-
-        return $this->successResponse(['count' => $count], 'تم جلب عدد التفاعلات بنجاح');
+        return $this->successResponse([], 'تم إضافة الاعجاب بنجاح', 201);
     }
 
     public function likedItems(Request $request)
@@ -88,16 +87,16 @@ class ReactionController extends Controller
         $type = $validated['type'];
 
         $dbModels = [
-            'post' => [\App\Models\Post::class, \App\Http\Resources\PostResource::class],
-            'blog' => [\App\Models\Blog::class, \App\Http\Resources\BlogResource::class],
-            'book' => [\App\Models\Book::class, \App\Http\Resources\BookResource::class],
+            'post' => [Post::class, PostResource::class],
+            'blog' => [Blog::class, BlogResource::class],
+            'book' => [Book::class, BookResource::class],
         ];
 
         $typeMap = [
-            'post' => \App\Models\Post::class,
-            'comment' => \App\Models\Comment::class,
-            'blog' => \App\Models\Blog::class,
-            'book' => \App\Models\Book::class,
+            'post' => Post::class,
+            'comment' => Comment::class,
+            'blog' => Blog::class,
+            'book' => Book::class,
             'podcast' => 'podcast',
             'episode' => 'episode',
         ];
@@ -136,12 +135,15 @@ class ReactionController extends Controller
         }
 
         $resourceClass = $type === 'podcast'
-            ? \App\Http\Resources\PodcastResource::class
-            : \App\Http\Resources\EpisodeResource::class;
+            ? PodcastResource::class
+            : EpisodeResource::class;
 
         return $this->successResponse(
             $resourceClass::collection(collect($items)),
             'تم جلب العناصر المعمول لها لايك من API بنجاح'
         );
     }
+
+
+
 }

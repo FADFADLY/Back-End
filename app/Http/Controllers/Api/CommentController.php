@@ -72,7 +72,6 @@ class CommentController extends Controller
             return $this->errorResponse([],'حدث خطأ اثناء انشاء التعليق', 500);
         }
 
-
         if ($post->user_id !== auth()->id()) {
             $post->user->notify(new NewInteractionNotification(
                 'comment',

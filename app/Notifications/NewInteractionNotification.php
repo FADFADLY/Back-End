@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Events\NewNotificationEvent;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Bus\Queueable;
@@ -14,7 +15,7 @@ class NewInteractionNotification extends Notification implements ShouldQueue
         public string $type,
         public object $model,
         public string $message,
-        public string $senderId
+        public int $senderId
 
     ) {}
 
@@ -25,12 +26,16 @@ class NewInteractionNotification extends Notification implements ShouldQueue
 
     public function toDatabase(object $notifiable): array
     {
-        return [
+        $data = [
             'type' => $this->type,
             'message' => $this->message,
             'model_type' => get_class($this->model),
             'model_id' => $this->model->id,
             'sender_id' => $this->senderId,
         ];
+
+        broadcast(new NewNotificationEvent($data, $notifiable->id))->toOthers();
+
+        return $data;
     }
 }

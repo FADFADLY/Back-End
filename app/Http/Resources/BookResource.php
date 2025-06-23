@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Auth;
 
 class BookResource extends JsonResource
 {
@@ -28,6 +29,7 @@ class BookResource extends JsonResource
                     'publication_date' => $this->publication_date,
                     'pages_count' => $this->pages_count,
                     'description' => $this->description,
+                    'reacted' => $this->reactions()->where('user_id', Auth::id())->exists(),
                 ]
             )
 

@@ -50,7 +50,7 @@ class PodcastController extends Controller
                         'duration_minutes' => round($item['audio_length_sec'] / 60),
                         'published_at' => Carbon::createFromTimestampMs($item['pub_date_ms'])->toDateTimeString(),
                         'url' => $item['listennotes_url'],
-                    ]
+                    ],
                 ];
             });
 
@@ -62,6 +62,10 @@ class PodcastController extends Controller
                 'publisher' => $first['publisher'],
                 'image' => $first['image'],
                 'episodes_count' => $group->count(),
+                'reacted' => Reaction::where('user_id', auth()->id())
+                    ->where('reactable_type', 'podcast')
+                    ->where('reactable_id', $podcastId)
+                    ->exists(),
             ];
         })->values();
 
@@ -94,7 +98,6 @@ class PodcastController extends Controller
             return [
                 'id' => $episode['id'],
                 'title' => $episode['title'],
-                'description' => $episode['description'],
                 'audio' => $episode['audio'],
                 'duration_minutes' => round($episode['audio_length_sec'] / 60),
                 'published_at' => Carbon::createFromTimestampMs($episode['pub_date_ms'])->toDateTimeString(),

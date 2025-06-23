@@ -92,7 +92,7 @@ class MoodEntryController extends Controller
         $moodEntries = $query->get();
 
         $moodEntries->map(function ($entry) {
-            $entry->day_of_week = Carbon::parse($entry->entry_date)->format('l');
+            $entry->day_of_week = Carbon::parse($entry->entry_date)->format('D');
             return $entry;
         });
 
@@ -116,7 +116,7 @@ class MoodEntryController extends Controller
             return $this->errorResponse([],'الحالة المزاجية غير موجودة', 404);
         }
 
-        $moodEntry->day_of_week = Carbon::parse($moodEntry->entry_date)->format('l');
+        $moodEntry->day_of_week = Carbon::parse($moodEntry->entry_date)->format('D');
 
         return $this->successResponse(
             $moodEntry,

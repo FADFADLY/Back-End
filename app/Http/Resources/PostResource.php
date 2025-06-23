@@ -2,20 +2,35 @@
 
 namespace App\Http\Resources;
 
-use App\Models\Blog;
 use App\Enums\AttachmentTypeEnum;
+use App\Models\Blog;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Auth;
 
 class PostResource extends JsonResource
 {
+    /**
+     * Transform the resource into an array.
+     *
+     * @return array<string, mixed>
+     */
     public function toArray(Request $request): array
     {
         $attachment = null;
 
         if ($this->type == AttachmentTypeEnum::POLL->value) {
-            $attachment = $this->pollOptions()->select('id', 'option', 'votes')->get();
+            $options = $this->pollOptions()->select('id', 'option', 'votes')->get();
+
+            $totalVotes = $options->sum('votes') ?: 1;
+
+            $attachment = $options->map(function ($option) use ($totalVotes) {
+                return [
+                    'id' => $option->id,
+                    'option' => $option->option,
+                    'percentage' => round(($option->votes / $totalVotes) * 100, 2),
+                ];
+            });
         }
 
         if ($this->type == AttachmentTypeEnum::LOCATION->value) {
@@ -30,13 +45,9 @@ class PostResource extends JsonResource
             $attachment = $this->attachment ? asset('/storage/' . $this->attachment) : null;
         }
 
-        if (
-            $this->type == AttachmentTypeEnum::ARTICLE->value &&
-            !empty($this->attachment) &&
-            is_numeric($this->attachment)
-        ) {
-            $blog = Blog::query()->where('id', $this->attachment)->first();
-            $attachment = $blog ? BlogResource::make($blog) : null;
+        if ($this->type == AttachmentTypeEnum::ARTICLE->value) {
+            $blog = Blog::where('id', (int)$this->attachment)->first();
+            $attachment = new BlogResource($blog);
         }
 
         return [
@@ -49,14 +60,6 @@ class PostResource extends JsonResource
             'comments_count' => $this->comments()->count(),
             'reactions_count' => $this->reactions()->count(),
             'reacted' => $this->reactions()->where('user_id', Auth::id())->exists(),
-            'poll_results' => $this->when(
-                $this->type === AttachmentTypeEnum::POLL->value,
-                fn() => $this->pollOptions->map(fn($option) => [
-                    'id' => $option->id,
-                    'option' => $option->option,
-                    'votes_count' => $option->votes->count(),
-                ])
-            ),
         ];
     }
 }

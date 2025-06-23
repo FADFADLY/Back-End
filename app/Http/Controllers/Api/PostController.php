@@ -66,7 +66,7 @@ class PostController extends Controller
 
         $post = Post::create([
             'content' => $validated['content'],
-            'user_id' =>auth()->id(),
+            'user_id' => auth()->id(),
             'type' => $typeEnum->value,
         ]);
 
@@ -105,7 +105,6 @@ class PostController extends Controller
                 $post->update(['attachment' => $validated['attachment']]);
             }
         }
-
 
 
 
@@ -221,6 +220,8 @@ class PostController extends Controller
         if ($alreadyVoted) {
             return $this->errorResponse([], 'لقد قمت بالتصويت بالفعل على هذا الاستطلاع', 422);
         }
+        $option->votes++;
+        $option->save();
 
         PollVote::create([
             'user_id' => auth()->id(),

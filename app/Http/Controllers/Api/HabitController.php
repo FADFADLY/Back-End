@@ -16,20 +16,36 @@ class HabitController extends Controller
      */
     public function index()
     {
-        $habits = Habit::select('id', 'name', 'icon')
-            ->get()
-            ->map(function ($habit) {;
-                    return [
-                        'id' => $habit->id,
-                        'name' => $habit->name,
-                        'icon' => $habit->icon ? asset('storage/' . $habit->icon) : null,
-                    ];
-                });
+        $user = auth()->user();
+        $today = now()->toDateString();
 
-        if ($habits->isEmpty()) {
-            return $this->errorResponse('لا توجد عادات', 404);
-        }
-         return $this->successResponse($habits,'تم جلب العادات بنجاح');
+        // كل العادات المتاحة
+        $allHabits = Habit::all();
+
+        // العادات اللي خلصها النهارده (إن وجدت)
+        $todayScore = HabitsScore::where('user_id', $user->id)
+            ->whereDate('created_at', $today)
+            ->first();
+
+        $doneHabits = $todayScore
+            ? json_decode($todayScore->habits, true)
+            : [];
+
+        // نرجع كل عادة ومعاها if it's done today
+        $habitsWithStatus = $allHabits->map(function ($habit) use ($doneHabits) {
+            return [
+                'id' => $habit->id,
+                'name' => $habit->name,
+                'icon' => $habit->icon ? asset('storage/' . $habit->icon) : null,
+                'done_today' => in_array($habit->id, $doneHabits),
+            ];
+        });
+
+        return $this->successResponse([
+            'habits' =>  $habitsWithStatus,
+            'score' => $todayScore ? $todayScore->score : 0,
+            'full_mark' => Habit::count(),
+        ], 'تم جلب العادات بنجاح');
     }
 
 
@@ -38,33 +54,50 @@ class HabitController extends Controller
      */
     public function store(Request $request)
     {
-       $validated =  request()->validate([
-           'habits' => 'required|array',
-        ],[
+        $validated = $request->validate([
+            'habits' => 'required|array',
+        ], [
             'habits.required' => 'يجب اختيار عادات',
             'habits.array' => 'يجب أن تكون العادات مصفوفة',
         ]);
 
-      $habits = $validated['habits'];
-      $user = auth()->user();
+        $habits = $validated['habits'];
+        $user = auth()->user();
+        $today = now()->toDateString();
 
-      $habitsScore = HabitsScore::Create(
-          [
-              'user_id' => $user->id,
-              'habits' => json_encode($habits),
-              'score' => count($habits),
-          ]
-         );
+        // نحاول نلاقي سجل النهاردة
+        $todayScore = HabitsScore::where('user_id', $user->id)
+            ->whereDate('created_at', $today)
+            ->first();
 
-        if (!$habitsScore) {
-            return $this->errorResponse([],'حدث خطأ أثناء حفظ العادات', 500);
+        $mergedHabits = null;
+        if ($todayScore) {
+            // لو فيه سجل، ندمج العادات الجديدة مع القديمة (بدون تكرار)
+            $existingHabits = json_decode($todayScore->habits, true);
+            $mergedHabits = array_unique(array_merge($existingHabits, $habits));
+            $todayScore->update([
+                'habits' => json_encode($mergedHabits),
+                'score' => count($mergedHabits),
+            ]);
+        } else {
+            // لو مفيش، نعمل سجل جديد
+            $todayScore = HabitsScore::create([
+                'user_id' => $user->id,
+                'habits' => json_encode($habits),
+                'score' => count($habits),
+            ]);
+        }
+
+        if (!$todayScore) {
+            return $this->errorResponse([], 'حدث خطأ أثناء حفظ العادات', 500);
         }
 
         return $this->successResponse([
-            'score' => count($habits),
-            'full_mark' => count(Habit::all()),
-        ], 'تم حفظ العادات بنجاح');
-   }
+            'score' => $todayScore->score,
+            'full_mark' => Habit::count(),
+            'done_habits' =>  $mergedHabits,
+        ], 'تم تحديث العادات بنجاح');
+    }
 
     /**
      * Display the specified resource.
