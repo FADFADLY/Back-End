@@ -66,7 +66,7 @@ class PostController extends Controller
 
         $post = Post::create([
             'content' => $validated['content'],
-            'user_id' => auth()->id(),
+            'user_id' =>auth()->id(),
             'type' => $typeEnum->value,
         ]);
 
@@ -102,22 +102,10 @@ class PostController extends Controller
 
         if ($typeEnum === AttachmentTypeEnum::ARTICLE) {
             if (!empty($validated['attachment'])) {
-                $blogId = (int) $validated['attachment'];
-                $blog = Blog::where('id', $blogId)->first();
-                if ($blog) {
-                    $post->update([
-                        'attachment' => json_encode([
-                            'title' => $blog->title,
-                            'body' => $blog->body,
-                            'image' => $blog->image,
-                            'author' => $blog->author,
-                            'description' => $blog->description,
-                            'publish_date' => $blog->publish_date,
-                        ], JSON_UNESCAPED_UNICODE),
-                    ]);
-                }
+                $post->update(['attachment' => $validated['attachment']]);
             }
         }
+
 
 
 

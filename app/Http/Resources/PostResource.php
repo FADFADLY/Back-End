@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Blog;
 use App\Enums\AttachmentTypeEnum;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -9,11 +10,6 @@ use Illuminate\Support\Facades\Auth;
 
 class PostResource extends JsonResource
 {
-    /**
-     * Transform the resource into an array.
-     *
-     * @return array<string, mixed>
-     */
     public function toArray(Request $request): array
     {
         $attachment = null;
@@ -35,7 +31,8 @@ class PostResource extends JsonResource
         }
 
         if ($this->type == AttachmentTypeEnum::ARTICLE->value) {
-            $attachment = $this->attachment ? json_decode($this->attachment, true) : null;
+            $attachment = Blog::select('id', 'title', 'image', 'author',  'publish_date')
+                ->find($this->attachment);
         }
 
         return [
@@ -48,7 +45,7 @@ class PostResource extends JsonResource
             'comments_count' => $this->comments()->count(),
             'reactions_count' => $this->reactions()->count(),
             'reacted' => $this->reactions()->where('user_id', Auth::id())->exists(),
-            'poll_results' => $this->when($this->type === 'poll', function () {
+            'poll_results' => $this->when($this->type === AttachmentTypeEnum::POLL->value, function () {
                 return $this->pollOptions->map(function ($option) {
                     return [
                         'id' => $option->id,
@@ -57,7 +54,6 @@ class PostResource extends JsonResource
                     ];
                 });
             }),
-
         ];
     }
 }
