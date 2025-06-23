@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use App\Enums\AttachmentTypeEnum;
+use App\Models\Blog;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Auth;
@@ -45,7 +46,8 @@ class PostResource extends JsonResource
         }
 
         if ($this->type == AttachmentTypeEnum::ARTICLE->value) {
-            $attachment = $this->attachment ? json_decode($this->attachment, true) : null;
+            $blog = Blog::where('id', (int)$this->attachment)->first();
+            $attachment = new BlogResource($blog);
         }
 
         return [
