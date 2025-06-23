@@ -30,9 +30,13 @@ class PostResource extends JsonResource
             $attachment = $this->attachment ? asset('/storage/' . $this->attachment) : null;
         }
 
-        if ($this->type == AttachmentTypeEnum::ARTICLE->value) {
-            $attachment = Blog::select('id', 'title', 'image', 'author',  'publish_date')
-                ->find($this->attachment);
+        if (
+            $this->type == AttachmentTypeEnum::ARTICLE->value &&
+            !empty($this->attachment) &&
+            is_numeric($this->attachment)
+        ) {
+            $blog = Blog::query()->where('id', $this->attachment)->first();
+            $attachment = $blog ? BlogResource::make($blog) : null;
         }
 
         return [
@@ -45,15 +49,14 @@ class PostResource extends JsonResource
             'comments_count' => $this->comments()->count(),
             'reactions_count' => $this->reactions()->count(),
             'reacted' => $this->reactions()->where('user_id', Auth::id())->exists(),
-            'poll_results' => $this->when($this->type === AttachmentTypeEnum::POLL->value, function () {
-                return $this->pollOptions->map(function ($option) {
-                    return [
-                        'id' => $option->id,
-                        'option' => $option->option,
-                        'votes_count' => $option->votes->count(),
-                    ];
-                });
-            }),
+            'poll_results' => $this->when(
+                $this->type === AttachmentTypeEnum::POLL->value,
+                fn() => $this->pollOptions->map(fn($option) => [
+                    'id' => $option->id,
+                    'option' => $option->option,
+                    'votes_count' => $option->votes->count(),
+                ])
+            ),
         ];
     }
 }
