@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\Api\HabitController;
 use App\Http\Controllers\Api\NotificationController;
+use App\Models\User;
+use App\Notifications\NewInteractionNotification;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BlogController;
@@ -94,6 +96,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/', 'index');
         Route::post('/{id}/read', 'read');
     });
+
 
 
 });

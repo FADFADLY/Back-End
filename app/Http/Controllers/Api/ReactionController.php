@@ -8,9 +8,9 @@ use App\Models\Book;
 use App\Models\Comment;
 use App\Models\Post;
 use App\Models\Reaction;
+use App\Notifications\NewInteractionNotification;
 use App\Traits\ApiResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Http;
 
 class ReactionController extends Controller
 {
@@ -46,7 +46,7 @@ class ReactionController extends Controller
 
         if ($existingReaction) {
             $existingReaction->delete();
-            return $this->successResponse([], 'تم حذف التفاعل بنجاح', 200);
+            return $this->successResponse([], 'تم حذف الاعجاب بنجاح', 200);
         }
 
         Reaction::create([
@@ -55,28 +55,22 @@ class ReactionController extends Controller
             'reactable_type' => $reactionType,
         ]);
 
-        return $this->successResponse([], 'تم إضافة التفاعل بنجاح', 201);
-    }
-    public function count(Request $request)
-    {
-        $validated = $request->validate([
-            'id' => 'required',
-            'type' => 'required|string|in:post,comment,blog,podcast,episode',
-        ]);
+        $modelInstance = null;
 
-        $reactionType = match ($validated['type']) {
-            'post' => Post::class,
-            'comment' => Comment::class,
-            'blog' => Blog::class,
-            'podcast' => 'podcast',   // API ID
-            'episode' => 'episode',   // API ID
-        };
+        if (in_array($validated['type'], ['post', 'comment'])) {
+            $modelInstance = $reactionType::find($validated['id']);
 
-        $count = Reaction::where('reactable_id', $validated['id'])
-            ->where('reactable_type', $reactionType)
-            ->count();
+            if ($modelInstance && $modelInstance->user_id !== auth()->id()) {
+                $modelInstance->user->notify(new NewInteractionNotification(
+                    'reaction',
+                    $modelInstance,
+                    auth()->user()->username . ' تفاعل مع ' . ($validated['type'] === 'post' ? 'منشورك' : 'تعليقك'),
+                    auth()->id()
+                ));
+            }
+        }
 
-        return $this->successResponse(['count' => $count], 'تم جلب عدد التفاعلات بنجاح');
+        return $this->successResponse([], 'تم إضافة الاعجاب بنجاح', 201);
     }
 
     public function likedItems(Request $request)
@@ -86,10 +80,10 @@ class ReactionController extends Controller
         ]);
 
         $dbModels = [
-            'post' => \App\Models\Post::class,
-            'comment' => \App\Models\Comment::class,
-            'blog' => \App\Models\Blog::class,
-            'book' => \App\Models\Book::class,
+            'post' => Post::class,
+            'comment' => Comment::class,
+            'blog' => Blog::class,
+            'book' => Book::class,
         ];
 
         $type = $validated['type'];

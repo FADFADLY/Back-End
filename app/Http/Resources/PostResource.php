@@ -19,7 +19,17 @@ class PostResource extends JsonResource
         $attachment = null;
 
         if ($this->type == AttachmentTypeEnum::POLL->value) {
-            $attachment = $this->pollOptions()->select('id', 'option', 'votes')->get();
+            $options = $this->pollOptions()->select('id', 'option', 'votes')->get();
+
+            $totalVotes = $options->sum('votes') ?: 1;
+
+            $attachment = $options->map(function ($option) use ($totalVotes) {
+                return [
+                    'id' => $option->id,
+                    'option' => $option->option,
+                    'percentage' => round(($option->votes / $totalVotes) * 100, 2),
+                ];
+            });
         }
 
         if ($this->type == AttachmentTypeEnum::LOCATION->value) {
@@ -48,16 +58,6 @@ class PostResource extends JsonResource
             'comments_count' => $this->comments()->count(),
             'reactions_count' => $this->reactions()->count(),
             'reacted' => $this->reactions()->where('user_id', Auth::id())->exists(),
-            'poll_results' => $this->when($this->type === 'poll', function () {
-                return $this->pollOptions->map(function ($option) {
-                    return [
-                        'id' => $option->id,
-                        'option' => $option->option,
-                        'votes_count' => $option->votes->count(),
-                    ];
-                });
-            }),
-
         ];
     }
 }

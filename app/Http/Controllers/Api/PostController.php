@@ -233,6 +233,8 @@ class PostController extends Controller
         if ($alreadyVoted) {
             return $this->errorResponse([], 'لقد قمت بالتصويت بالفعل على هذا الاستطلاع', 422);
         }
+        $option->votes++;
+        $option->save();
 
         PollVote::create([
             'user_id' => auth()->id(),

@@ -19,4 +19,9 @@ class Book extends Model
         'pages_count',
         'image_url'
     ];
+
+    public function reactions()
+    {
+        return $this->morphMany(Reaction::class, 'reactable');
+    }
 }
