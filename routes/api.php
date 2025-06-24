@@ -17,6 +17,7 @@ use App\Http\Controllers\Api\ReactionController;
 use App\Http\Controllers\Api\MoodEntryController;
 use App\Http\Controllers\Api\TimerController;
 use App\Http\Controllers\Api\PodcastController;
+use App\Http\Controllers\Api\Auth\SocialLoginController;
 
 /*
 |--------------------------------------------------------------------------
@@ -96,7 +97,6 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/', 'index');
         Route::post('/{id}/read', 'read');
     });
-
-
-
 });
+
+Route::post('auth/{provider}/login', [SocialLoginController::class, 'login']);
