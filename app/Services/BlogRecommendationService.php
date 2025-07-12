@@ -31,7 +31,6 @@ class BlogRecommendationService
                 );
             }
         } catch (\Exception $e) {
-            // يُفضل تخزين الخطأ في اللوج أو تجاهله في هذه الخدمة
         }
     }
 

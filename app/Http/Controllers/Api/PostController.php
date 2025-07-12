@@ -103,7 +103,12 @@ class PostController extends Controller
         if ($typeEnum === AttachmentTypeEnum::ARTICLE) {
             if (!empty($validated['attachment'])) {
                 $post->update(['attachment' => $validated['attachment']]);
+
+                $blog = Blog::findOrFail((int)$validated['attachment']);
+                $blog->increment('share_count');
+
             }
+
         }
 
 
@@ -127,27 +132,13 @@ class PostController extends Controller
         $reactions = $post->reactions->map(function ($reaction) {
             return [
                 'user_name' => $reaction->user->username,
-                'user_avatar' => $reaction->user->avatar,
-            ];
-        });
-
-        $pollVotes = $post->pollOptions->map(function ($option) {
-            return [
-                'option_id' => $option->id,
-                'option_text' => $option->option,
-                'votes_count' => is_countable($option->votes) ? $option->votes->count() : 0,
-                'voters' => $option->pollVotes->map(function ($vote) {
-                    return [
-                        'user_name' => $vote->user->username,
-                    ];
-                }),
+                'user_avatar' => $reaction->user->avatar ? asset('storage/' . $reaction->user->avatar) : null,
             ];
         });
 
         return $this->successResponse(
             [
                 'reactions' => $reactions,
-                'poll_votes' => $pollVotes,
             ],
             'تم جلب المنشور بنجاح',
         );
@@ -158,6 +149,14 @@ class PostController extends Controller
      */
     public function update(Request $request, Post $post, PostAnalysisService $analyzer)
     {
+        if (!$post) {
+            return $this->errorResponse([], 'حدث خطأ اثناء تحديث المنشور', 500);
+        }
+
+        if ($post->user_id !== auth()->id()) {
+            return $this->errorResponse([], 'ليس لديك صلاحية لتحديث هذا المنشور', 403);
+        }
+
         try {
             $validated = $request->validate([
                 'content' => 'required|string',
@@ -173,12 +172,9 @@ class PostController extends Controller
         $result = $analyzer->analyze($validated['content']);
 
         if (!$result['success']) {
-            return $this->errorResponse([], $result['message'], 403); // Forbidden لو محتوى غير لائق
+            return $this->errorResponse([], $result['message'], 403);
         }
 
-        if (!$post) {
-            return $this->errorResponse([], 'حدث خطأ اثناء تحديث المنشور', 500);
-        }
 
         $post->update([
             'content'  => $validated['content'],
@@ -194,6 +190,10 @@ class PostController extends Controller
     {
         if (!$post) {
             return $this->errorResponse([], 'المنشور غير موجود', 404);
+        }
+
+        if ($post->user_id !== auth()->id()) {
+            return $this->errorResponse([], 'ليس لديك صلاحية لحذف هذا المنشور', 403);
         }
 
         $post->delete();
@@ -213,19 +213,35 @@ class PostController extends Controller
             return $this->errorResponse([], 'الخيار لا ينتمي لهذا البوست', 403);
         }
 
-        $alreadyVoted = PollVote::where('user_id', auth()->id())
-            ->whereIn('poll_option_id', $post->pollOptions->pluck('id'))
-            ->exists();
+        $userId = auth()->id();
 
-        if ($alreadyVoted) {
-            return $this->errorResponse([], 'لقد قمت بالتصويت بالفعل على هذا الاستطلاع', 422);
+        $existingVote = PollVote::where('user_id', $userId)
+            ->whereIn('poll_option_id', $post->pollOptions->pluck('id'))
+            ->first();
+
+        if ($existingVote) {
+            if ($existingVote->poll_option_id == $option->id) {
+                $option->decrement('votes');
+                $existingVote->delete();
+
+                return $this->successResponse([], 'تم إلغاء تصويتك بنجاح');
+            } else {
+                PollOption::where('id', $existingVote->poll_option_id)->decrement('votes');
+                $option->increment('votes');
+
+                $existingVote->update([
+                    'poll_option_id' => $option->id,
+                ]);
+
+                return $this->successResponse([], 'تم تعديل تصويتك بنجاح');
+            }
         }
-        $option->votes++;
-        $option->save();
+
+        $option->increment('votes');
 
         PollVote::create([
-            'user_id' => auth()->id(),
-            'poll_option_id' => $validated['option_id'],
+            'user_id' => $userId,
+            'poll_option_id' => $option->id,
         ]);
 
         return $this->successResponse([], 'تم تسجيل تصويتك بنجاح');

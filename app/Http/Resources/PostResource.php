@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use App\Enums\AttachmentTypeEnum;
 use App\Models\Blog;
+use App\Models\PollVote;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Auth;
@@ -22,15 +23,26 @@ class PostResource extends JsonResource
         if ($this->type == AttachmentTypeEnum::POLL->value) {
             $options = $this->pollOptions()->select('id', 'option', 'votes')->get();
 
-            $totalVotes = $options->sum('votes') ?: 1;
+            $totalVotes = $options->sum('votes') ?: 0;
 
-            $attachment = $options->map(function ($option) use ($totalVotes) {
+
+            $optionsData = $options->map(function ($option) use ($totalVotes) {
+                $voted = PollVote::where('user_id', Auth::id())
+                    ->where('poll_option_id', $option->id)
+                    ->exists();
                 return [
                     'id' => $option->id,
                     'option' => $option->option,
-                    'percentage' => round(($option->votes / $totalVotes) * 100, 2),
+                    'votes' => $option->votes,
+                    'percentage' => $totalVotes !== 0 ? round(($option->votes / $totalVotes) * 100, 2) : 0,
+                    'voted' => $voted,
                 ];
             });
+
+            $attachment = [
+                'options' => $optionsData,
+                'total_votes' => $totalVotes,
+            ];
         }
 
         if ($this->type == AttachmentTypeEnum::LOCATION->value) {
@@ -57,6 +69,7 @@ class PostResource extends JsonResource
             'attachment' => $attachment,
             'created_at' => $this->created_at->diffForHumans(),
             'user_name' => $this->user?->username,
+            'user_avatar' => $this->user->avatar ? asset('storage/' . $this->user->avatar) : null,
             'comments_count' => $this->comments()->count(),
             'reactions_count' => $this->reactions()->count(),
             'reacted' => $this->reactions()->where('user_id', Auth::id())->exists(),

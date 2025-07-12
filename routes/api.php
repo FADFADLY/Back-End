@@ -38,6 +38,8 @@ Route::controller(AuthController::class)->group(function () {
     Route::post('/reset-password', 'resetPassword');
     Route::post('/resend-code', 'resendCode');
     Route::middleware('auth:sanctum')->post('/logout', 'logout');
+    Route::post('auth/{provider}/login','socialLogin');
+
 });
 
 Route::middleware('auth:sanctum')->group(function () {
@@ -98,5 +100,3 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/{id}/read', 'read');
     });
 });
-
-Route::post('auth/{provider}/login', [SocialLoginController::class, 'login']);

@@ -65,9 +65,9 @@ class TestController extends Controller
         }
         $testId = (int) $testId;
         $resultData = match ($testId) {
-            1 => TestResultMessageService::getAnxietyResult($score),      // تايلور
-            2 => TestResultMessageService::getDepressionResult($score),   // بيك
-            3 => TestResultMessageService::getSpenceResult($score),       // سبنس
+            1 => TestResultMessageService::getAnxietyResult($score),
+            2 => TestResultMessageService::getDepressionResult($score),
+            3 => TestResultMessageService::getSpenceResult($score),
             default => ['result' => 'غير معروف', 'message' => 'نوع الاختبار غير معروف'],
         };
 

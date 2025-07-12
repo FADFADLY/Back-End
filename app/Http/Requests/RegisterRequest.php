@@ -6,6 +6,7 @@ use App\Traits\ApiResponse;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Validation\Rules\Password;
 
 class RegisterRequest extends FormRequest
 {
@@ -31,7 +32,13 @@ class RegisterRequest extends FormRequest
             'email'        => 'required|email|unique:users,email',
             'gender'       => 'required|string',
             'age'          => 'required|int',
-            'password'     => 'required|string|min:6|confirmed',
+            'password' => ['required', 'string', 'confirmed', Password::min(8)
+                ->mixedCase()
+                ->letters()
+                ->numbers()
+                ->symbols()
+                ->uncompromised()
+            ],
         ];
     }
     public function messages(): array
@@ -48,9 +55,14 @@ class RegisterRequest extends FormRequest
             'gender.required' => 'الجنس مطلوب',
             'age.required' => 'العمر مطلوب',
             'age.integer' => 'العمر يجب ان يكون رقم',
-            'password.required' => 'كلمة المرور مطلوبة',
-            'password.min' => 'كلمة المرور يجب ان لا تقل عن 6 احرف',
-            'password.confirmed' => 'كلمة المرور غير متطابقة',
+            'password.required'   => 'كلمة المرور مطلوبة',
+            'password.string'     => 'كلمة المرور يجب أن تكون نصًا',
+            'password.min'        => 'كلمة المرور يجب أن تتكون من 8 أحرف على الأقل',
+            'password.confirmed'  => 'كلمة المرور غير متطابقة',
+            'password.mixed'      => 'كلمة المرور يجب أن تحتوي على حرف كبير وحرف صغير على الأقل',
+            'password.numbers'    => 'كلمة المرور يجب أن تحتوي على رقم واحد على الأقل',
+            'password.symbols'    => 'كلمة المرور يجب أن تحتوي على رمز خاص مثل @ أو # أو $',
+            'password.uncompromised' => 'كلمة المرور هذه تم اكتشافها في تسريبات بيانات، يرجى اختيار كلمة مرور مختلفة',
         ];
     }
 

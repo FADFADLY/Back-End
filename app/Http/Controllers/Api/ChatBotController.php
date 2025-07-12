@@ -44,13 +44,13 @@ class ChatBotController extends Controller
             return $this->errorResponse([], 'خطأ في إرسال الرسالة', 500);
         }
 
-            ChatBotMessage::create([
-                'chat_id' => $chat->id,
-                'prompt' => $request->prompt,
-                'response' => $reply,
-            ]);
+        ChatBotMessage::create([
+            'chat_id' => $chat->id,
+            'prompt' => $request->prompt,
+            'response' => $reply,
+        ]);
 
-            $chat?->update(['title' => $request->prompt]);
+        $chat?->update(['title' => $request->prompt]);
 
         return $this->successResponse([
             'chat_id' => $chat->id,

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Comment;
 use App\Models\User;
 use App\Traits\ApiResponse;
 use Illuminate\Http\Request;
@@ -18,10 +19,20 @@ class NotificationController extends Controller
             return $this->errorResponse([], 'لا توجد إشعارات', 404);
         }
 
+
         return $this->successResponse(
             $notifications->map(function ($notification) {
+
+                $targetId = $notification->data['model_id'] ?? null;
+
+                if($notification->data['model_type'] == 'App\Models\Comment') {
+                    $postId = Comment::find($targetId)->post_id ?? null;
+                    $targetId = $postId;
+                }
+
                 return [
-                    'id' => $notification->id,
+                    'id' => $notification->id ,
+                    'target_id' =>$targetId ,
                     'type' => $notification->data['type'] ?? 'general',
                     'message' => $notification->data['message'] ?? 'No message',
                     'sender' => [

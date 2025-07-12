@@ -12,17 +12,17 @@ class NewNotificationEvent implements ShouldBroadcast
     use Dispatchable, SerializesModels;
 
     public $notification;
-    public $userId;
+    public $username;
 
-    public function __construct($notification, $userId)
+    public function __construct($notification, $username)
     {
         $this->notification = $notification;
-        $this->userId = $userId;
+        $this->username = $username;
     }
 
     public function broadcastOn()
     {
-        return new PrivateChannel('notifications.' . $this->userId);
+        return new PrivateChannel('notifications.' . $this->username);
     }
 
     public function broadcastAs()

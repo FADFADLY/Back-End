@@ -42,8 +42,8 @@ class ReactionController extends Controller
             'comment' => Comment::class,
             'blog' => Blog::class,
             'book' => Book::class,
-            'podcast' => 'podcast',   // API ID
-            'episode' => 'episode',   // API ID
+            'podcast' => 'podcast',
+            'episode' => 'episode',
         };
 
         $existingReaction = Reaction::where('user_id', auth()->id())

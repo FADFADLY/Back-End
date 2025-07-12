@@ -12,6 +12,8 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Laravel\Socialite\Facades\Socialite;
+use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
@@ -247,4 +249,42 @@ class AuthController extends Controller
             return $this->errorResponse([],'فشل في تسجيل الخروج', 500);
         }
     }
+
+    public function socialLogin(Request $request, $provider)
+    {
+        $request->validate([
+            'access_token' => 'required|string',
+        ]);
+
+        try {
+            $socialUser = Socialite::driver($provider)
+                ->stateless()
+                ->userFromToken($request->access_token);
+
+            $user = User::firstOrCreate(
+                ['email' => $socialUser->getEmail()],
+                [
+                    'name' => $socialUser->getName() ?? $socialUser->getNickname(),
+                    'username' => Str::slug($socialUser->getName() ?? $socialUser->getNickname()) . '-' . Str::random(5),
+                    'email_verified_at' => now(),
+                    'password' => bcrypt(Str::random(16)),
+                ]
+            );
+
+            $token = $user->createToken('auth_token')->plainTextToken;
+
+            return response()->json([
+                'token' => $token,
+                'token_type' => 'Bearer',
+                'user' => $user,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Authentication failed',
+                'error' => $e->getMessage()
+            ], 401);
+        }
+    }
+
+
 }

@@ -75,7 +75,7 @@ class CommentController extends Controller
         if ($post->user_id !== auth()->id()) {
             $post->user->notify(new NewInteractionNotification(
                 'comment',
-                $comment,
+                $post,
                 auth()->user()->username . ' علق علي منشورك.',
                 auth()->id()
             ));
@@ -116,6 +116,14 @@ class CommentController extends Controller
      */
     public function update(Request $request, Comment $comment)
     {
+        if (!$comment) {
+            return $this->errorResponse([],'التعليق غير موجود', 404);
+        }
+
+        if ($comment->user_id !== auth()->id()) {
+            return $this->errorResponse([],'ليس لديك صلاحية لتحديث هذا التعليق', 403);
+        }
+
         try {
             $validated = $request->validate ([
                 'body' => ['required', 'string', 'max:255'],
@@ -143,6 +151,10 @@ class CommentController extends Controller
     {
         if (!$comment) {
             return $this->errorResponse([],'التعليق غير موجود', 404);
+        }
+
+        if ($comment->user_id !== auth()->id()) {
+            return $this->errorResponse([],'ليس لديك صلاحية لحذف هذا التعليق', 403);
         }
 
 

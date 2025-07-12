@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->date('entry_date');
-            $table->enum('mood', ['happy', 'neutral', 'sad', 'angry', 'crying']);
-            $table->string('feeling')->nullable();
+//            $table->enum('mood', ['happy', 'neutral', 'sad', 'angry', 'crying']);
+//            $table->string('feeling')->nullable();
             $table->text('notes')->nullable();
             $table->timestamps();
         });

@@ -16,6 +16,7 @@ class ProfileResource extends JsonResource
     {
         return [
             'name' => $this->name,
+            'username' => $this->username,
             'email' => $this->email,
             'avatar' => $this->avatar ? asset('/storage/' . $this->avatar) : null,
             'bio'=> $this->bio,

@@ -26,7 +26,7 @@ class NewInteractionNotification extends Notification implements ShouldQueue
 
     public function toDatabase(object $notifiable): array
     {
-        $data = [
+        return [
             'type' => $this->type,
             'message' => $this->message,
             'model_type' => get_class($this->model),
@@ -34,8 +34,5 @@ class NewInteractionNotification extends Notification implements ShouldQueue
             'sender_id' => $this->senderId,
         ];
 
-        broadcast(new NewNotificationEvent($data, $notifiable->id))->toOthers();
-
-        return $data;
     }
 }
